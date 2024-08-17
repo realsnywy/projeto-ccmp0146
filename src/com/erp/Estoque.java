@@ -31,6 +31,21 @@ public class Estoque {
 		saveProdutos();
 		System.out.println("Produto adicionado com sucesso.");
 	}
+	
+	public void removerProdutoEstoque(Scanner scanner) throws IOException {//Remoção de produtos em estoque
+		String idProduto;
+		listaProdutos();
+		System.out.print("Digite o id do produto: ");
+		idProduto = scanner.nextLine();
+		for (Produto p : produtos) {
+			if (p.getId().equals(idProduto)) {
+				produtos.remove(p);
+				saveProdutos();
+				break;
+			}
+		}
+		
+	}
 
 	public void listaProdutos() {
 		System.out.println("Produtos:");
@@ -40,6 +55,7 @@ public class Estoque {
 	}
 
 	public void compraProduto(Scanner scanner) throws IOException {
+		listaProdutos();//Adicionei para mostrar os itens disponiveis para compra
 		System.out.print("ID do Produto a comprar: ");
 		String produtoId = scanner.nextLine();
 
@@ -62,6 +78,7 @@ public class Estoque {
 	}
 
 	public void fazPagamento(Scanner scanner) throws IOException {
+		listarTitulosEmAberto();
 		System.out.print("ID do Título a pagar: ");
 		String tituloId = scanner.nextLine();
 
@@ -82,11 +99,25 @@ public class Estoque {
 		}
 	}
 
-	public void listarTitulosDeDestaque() {
+	public void listarTitulosEmAberto() {
 		System.out.println("Títulos em Aberto:");
 		for (Titulo title : titulos) {
 			if (!title.isPago()) {
 				System.out.println(title.getId().toString() + " - R$ " + title.getQuantidade());
+			}
+		}
+	}
+	
+	public void removerProdutoEmAberto(Scanner scanner) throws IOException {
+		String idTitulo;
+		listarTitulosEmAberto();
+		System.out.println("Digite o Id do porduto que será removido: ");
+		idTitulo = scanner.nextLine();
+		for (Titulo title : titulos) {
+			if(title.getId().equals(idTitulo)) {
+				titulos.remove(title);
+				saveTitulos();
+				break;
 			}
 		}
 	}

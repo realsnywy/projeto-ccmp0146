@@ -108,10 +108,10 @@ public class Estoque {
 		}
 	}
 	
-	public void removerProdutoEmAberto(Scanner scanner) throws IOException {
+	public void removerProdutoEmAberto(Scanner scanner) throws IOException {// Remover titulos em aberto
 		String idTitulo;
 		listarTitulosEmAberto();
-		System.out.println("Digite o Id do porduto que será removido: ");
+		System.out.println("Digite o Id do produto que será removido: ");
 		idTitulo = scanner.nextLine();
 		for (Titulo title : titulos) {
 			if(title.getId().equals(idTitulo)) {

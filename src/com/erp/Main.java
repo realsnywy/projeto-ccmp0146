@@ -14,8 +14,10 @@ public class Main {
 			System.out.println("2. Listar Produtos");
 			System.out.println("3. Comprar Produto");
 			System.out.println("4. Efetuar Pagamento");
-			System.out.println("5. Listar Títulos em Aberto");
-			System.out.println("6. Sair");
+			System.out.println("5. Listar Títulos Em Aberto");
+			System.out.println("6. Remover Itens Em Aberto");
+			System.out.println("7. Remover produto");
+			System.out.println("8. Sair");
 			System.out.print("Escolha uma opção: ");
 			int choice = scanner.nextInt();
 			scanner.nextLine(); // Consumir nova linha
@@ -34,9 +36,15 @@ public class Main {
 				estoque.fazPagamento(scanner);
 				break;
 			case 5:
-				estoque.listarTitulosDeDestaque();
+				estoque.listarTitulosEmAberto();
 				break;
 			case 6:
+				estoque.removerProdutoEmAberto(scanner);
+				break;
+			case 7:
+				estoque.removerProdutoEstoque(scanner);
+				break;		
+			case 8:
 				System.out.println("Saindo...");
 				return;
 			default:

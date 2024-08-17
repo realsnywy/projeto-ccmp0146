@@ -16,7 +16,7 @@ public class Main {
 			System.out.println("4. Efetuar Pagamento");
 			System.out.println("5. Listar Títulos Em Aberto");
 			System.out.println("6. Remover Itens Em Aberto");
-			System.out.println("7. Remover produto");
+			System.out.println("7. Remover produto do Estoque");
 			System.out.println("8. Sair");
 			System.out.print("Escolha uma opção: ");
 			int choice = scanner.nextInt();

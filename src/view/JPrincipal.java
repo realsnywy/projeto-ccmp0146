@@ -51,7 +51,7 @@ public class JPrincipal extends JFrame {
 		contentPane.setLayout(null);
 		
 		JPanel panel = new JPanel();
-		panel.setBackground(new Color(0, 128, 192));
+		panel.setBackground(new Color(64, 128, 128));
 		panel.setBounds(73, 21, 480, 443);
 		contentPane.add(panel);
 		panel.setLayout(null);
@@ -112,5 +112,19 @@ public class JPrincipal extends JFrame {
 		lblNewLabel_2.setFont(new Font("Tahoma", Font.PLAIN, 32));
 		lblNewLabel_2.setBounds(157, 41, 148, 31);
 		panel.add(lblNewLabel_2);
+		
+		JLabel lblNewLabel_3 = new JLabel("Trade&Reseve@gmail.com");
+		lblNewLabel_3.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		lblNewLabel_3.setBounds(302, 406, 157, 13);
+		panel.add(lblNewLabel_3);
+		
+		JLabel lblNewLabel_4 = new JLabel("SAC");
+		lblNewLabel_4.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		lblNewLabel_4.setBounds(302, 389, 45, 13);
+		panel.add(lblNewLabel_4);
+		
+		JPanel panel_1 = new JPanel();
+		panel_1.setBounds(302, 384, 148, 35);
+		panel.add(panel_1);
 	}
 }

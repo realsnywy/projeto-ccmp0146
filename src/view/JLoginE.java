@@ -53,7 +53,7 @@ public class JLoginE extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JPanel panel = new JPanel();
+		JPanel panel =  new JPanel();
 		panel.setBackground(new Color(70, 115, 121));
 		panel.setBounds(73, 21, 480, 443);
 		contentPane.add(panel);
@@ -86,8 +86,12 @@ public class JLoginE extends JFrame {
 				if (textFieldUsuario.getText()!=null && 
 						!textFieldUsuario.getText().isEmpty() && 
 						passwordField.getText()!=null && 
-						passwordField.getText().isEmpty()) {
+						!passwordField.getText().isEmpty()) {
 					JOptionPane.showMessageDialog(btnNewButton, "informações Validas");
+					dispose();
+					JPaginaEstoque jPaginaEstoque = new JPaginaEstoque();
+					jPaginaEstoque.setLocationRelativeTo(jPaginaEstoque);
+					jPaginaEstoque.setVisible(true);
 				}else {
 					JOptionPane.showMessageDialog(btnNewButton, "informações inválidas \n Digite novamente", "AVISO", JOptionPane.WARNING_MESSAGE);
 				}

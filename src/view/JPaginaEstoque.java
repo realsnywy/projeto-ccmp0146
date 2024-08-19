@@ -12,6 +12,9 @@ import java.awt.Font;
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
 import javax.swing.JPasswordField;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.awt.event.ActionEvent;
 
 public class JPaginaEstoque extends JFrame {
 
@@ -53,6 +56,14 @@ public class JPaginaEstoque extends JFrame {
 		contentPane.add(panel);
 		
 		JButton btnNewButton_1 = new JButton("SAIR");
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+				JPrincipal jPrincipal = new JPrincipal();
+				jPrincipal.setLocationRelativeTo(jPrincipal);
+				jPrincipal.setVisible(true);
+			}
+		});
 		btnNewButton_1.setFont(new Font("Tahoma", Font.BOLD, 10));
 		btnNewButton_1.setBounds(10, 412, 85, 21);
 		panel.add(btnNewButton_1);
@@ -70,23 +81,46 @@ public class JPaginaEstoque extends JFrame {
 		panel.add(lblEstoque);
 		
 		JButton btnListarProdutos = new JButton("ADCIONAR PRODUTOS");
+		btnListarProdutos.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+				JAdicionarProdutos jAdicionarProdutos = null;
+				try {
+					jAdicionarProdutos = new JAdicionarProdutos();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				jAdicionarProdutos.setLocationRelativeTo(jAdicionarProdutos);
+				jAdicionarProdutos.setVisible(true);
+			}
+		});
 		btnListarProdutos.setFont(new Font("Tahoma", Font.BOLD, 15));
-		btnListarProdutos.setBounds(144, 106, 209, 39);
+		btnListarProdutos.setBounds(144, 151, 209, 39);
 		panel.add(btnListarProdutos);
 		
 		JButton btnRemoverProdutos = new JButton("REMOVER PRODUTOS");
+		btnRemoverProdutos.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+				JRemoverProdutos jRemoverProdutos = null;
+				try {
+					jRemoverProdutos = new JRemoverProdutos();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				jRemoverProdutos.setLocationRelativeTo(jRemoverProdutos);
+				jRemoverProdutos.setVisible(true);
+			}
+		});
 		btnRemoverProdutos.setFont(new Font("Tahoma", Font.BOLD, 15));
-		btnRemoverProdutos.setBounds(144, 167, 209, 39);
+		btnRemoverProdutos.setBounds(144, 200, 209, 39);
 		panel.add(btnRemoverProdutos);
-		
-		JButton btnListarProdutos_1 = new JButton("LISTAR PRODUTOS");
-		btnListarProdutos_1.setFont(new Font("Tahoma", Font.BOLD, 15));
-		btnListarProdutos_1.setBounds(144, 231, 209, 39);
-		panel.add(btnListarProdutos_1);
 		
 		JButton btnAjuda = new JButton("AJUDA");
 		btnAjuda.setFont(new Font("Tahoma", Font.BOLD, 15));
-		btnAjuda.setBounds(144, 293, 209, 39);
+		btnAjuda.setBounds(144, 249, 209, 39);
 		panel.add(btnAjuda);
 	}
 }

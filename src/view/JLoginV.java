@@ -14,6 +14,7 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JPasswordField;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.awt.event.ActionEvent;
 
 public class JLoginV extends JFrame {
@@ -47,7 +48,7 @@ public class JLoginV extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 630, 520);
 		contentPane = new JPanel();
-		contentPane.setBackground(new Color(68, 204, 215));
+		contentPane.setBackground(new Color(255, 255, 255));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		setContentPane(contentPane);
@@ -86,8 +87,18 @@ public class JLoginV extends JFrame {
 				if (textFieldUsuario.getText()!=null && 
 						!textFieldUsuario.getText().isEmpty() && 
 						passwordField.getText()!=null && 
-						passwordField.getText().isEmpty()) {
+						!passwordField.getText().isEmpty()) {
 					JOptionPane.showMessageDialog(btnNewButton, "informações Validas");
+					dispose();
+					JPaginaVendas jPaginaVendas = null;
+					try {
+						jPaginaVendas = new JPaginaVendas();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					jPaginaVendas.setLocationRelativeTo(jPaginaVendas);
+					jPaginaVendas.setVisible(true);
 				}else {
 					JOptionPane.showMessageDialog(btnNewButton, "informações inválidas \n Digite novamente", "AVISO", JOptionPane.WARNING_MESSAGE);
 				}

@@ -21,6 +21,7 @@ import java.awt.event.ActionEvent;
 public class JPrincipal extends JFrame {
 
 	private static final long serialVersionUID = 1L;
+	private static boolean atualizadorExecutado = false;
 	private JPanel contentPane;
 
 	/**
@@ -44,15 +45,18 @@ public class JPrincipal extends JFrame {
 	 * Create the frame.
 	 */
 	public JPrincipal() {
-		JOptionPane.showMessageDialog(null, "No momento, vamos verificar se há atualizações. Aguarde um pouco!",
-				"Atualizador",
-				JOptionPane.INFORMATION_MESSAGE);
-		try {
-			Thread.sleep(5000);
-		} catch (InterruptedException e) {
+		if (!atualizadorExecutado) {
+			atualizadorExecutado = true; // Altera a variável para true após a primeira execução
+			JOptionPane.showMessageDialog(null, "No momento, vamos verificar se há atualizações. Aguarde um pouco!",
+					"Atualizador",
+					JOptionPane.INFORMATION_MESSAGE);
+			try {
+				Thread.sleep(3000);
+			} catch (InterruptedException e) {
+			}
+			JOptionPane.showMessageDialog(null, "Não há atualizações no momento!", "Atualizador",
+					JOptionPane.INFORMATION_MESSAGE);
 		}
-		JOptionPane.showMessageDialog(null, "Não há atualizações no momento!", "Atualizador",
-				JOptionPane.INFORMATION_MESSAGE);
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 630, 520);
@@ -153,7 +157,8 @@ public class JPrincipal extends JFrame {
 						JOptionPane.showMessageDialog(null, "Erro ao salvar informações de licença.");
 						return;
 					}
-					// Como é apenas uma questão de "idéia", o programa não carregará de fato uma licença toda vez que abrir. Mas tá aí. :P
+					// Como é apenas uma questão de "idéia", o programa não carregará de fato uma
+					// licença toda vez que abrir. Mas tá aí. :P
 
 					JOptionPane.showMessageDialog(null, "Licença ativada com sucesso.");
 					btnAtivarLicenca.setText("Ativado!");

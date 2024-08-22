@@ -7,6 +7,8 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import com.erp.Main;
+import com.erp.Usuario;
+import com.erp.UsuarioDAO;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -87,12 +89,14 @@ public class JLoginV extends JFrame {
 		JButton btnNewButton = new JButton("ENTRAR");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (textFieldUsuario.getText()!=null && 
-						!textFieldUsuario.getText().isEmpty() && 
-						passwordField.getText()!=null && 
-						!passwordField.getText().isEmpty()) {
-					JOptionPane.showMessageDialog(btnNewButton, "informações Validas");
-					dispose();
+				String nome = textFieldUsuario.getText();
+                String senha = new String(passwordField.getPassword());
+                
+                UsuarioDAO usuarioDAO = new UsuarioDAO();
+                Usuario usuario = usuarioDAO.buscarUsuario(nome, senha);
+                if (usuario != null) {
+                    JOptionPane.showMessageDialog(btnNewButton, "Login bem-sucedido");
+                    dispose();
 					JPaginaVendas jPaginaVendas = null;
 					try {
 						jPaginaVendas = new JPaginaVendas();
@@ -102,10 +106,10 @@ public class JLoginV extends JFrame {
 					}
 					jPaginaVendas.setLocationRelativeTo(jPaginaVendas);
 					jPaginaVendas.setVisible(true);
-				}else {
-					JOptionPane.showMessageDialog(btnNewButton, "informações inválidas \n Digite novamente", "AVISO", JOptionPane.WARNING_MESSAGE);
-				}
-			}
+                } else {
+                    JOptionPane.showMessageDialog(btnNewButton, "Usuário ou senha inválidos", "AVISO", JOptionPane.WARNING_MESSAGE);
+                }
+            }
 		});
 		btnNewButton.setBackground(new Color(68, 204, 215));
 		btnNewButton.setForeground(new Color(0, 0, 0));

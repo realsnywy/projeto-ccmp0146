@@ -30,7 +30,6 @@ public class Main extends JFrame {
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
     private static final String CONFIG_FILE = "config.properties";
-    private static final String AVISO_EXIBIDO_KEY = "aviso_exibido";
     private static final String TIMESTAMP_KEY = "timestamp";
     private static final long AVISO_INTERVALO = 1000 * 60 * 60 * 24; // 24 horas em milissegundos
 

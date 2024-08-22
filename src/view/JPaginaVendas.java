@@ -11,6 +11,8 @@ import com.erp.Estoque;
 import com.erp.Main;
 import com.erp.Produto;
 import com.erp.Titulo;
+import com.erp.Usuario;
+import com.erp.UsuarioDAO;
 
 import java.awt.Color;
 import javax.swing.JTextField;
@@ -39,6 +41,8 @@ public class JPaginaVendas extends JFrame {
 	private JTextField textFieldColocarId;
 	private JTable tableTotal;
 	private DefaultTableModel modelTotal;
+	private Usuario usuarioLogado;
+	private UsuarioDAO usuarioDAO;
 
 	/**
 	 * Launch the application.
@@ -55,14 +59,18 @@ public class JPaginaVendas extends JFrame {
 			}
 		});
 	}
-
 	/**
 	 * Create the frame.
 	 * @throws IOException 
 	 */
+    
 	public JPaginaVendas() throws IOException {
 		
+        this.usuarioDAO = new UsuarioDAO();
+        this.estoque = new Estoque();
+        initialize();
 		estoque = new Estoque();
+		
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 900, 780);
@@ -231,11 +239,15 @@ public class JPaginaVendas extends JFrame {
         btnPagar.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
 			try {
+				atualizarTotalVendas();
+				UsuarioDAO usuarioDAO = new UsuarioDAO();
+				usuarioDAO.atualizarVendas(usuarioLogado.getNome(), usuarioLogado.getVendas());
+				JOptionPane.showMessageDialog(btnPagar, "Pagamento Realizado com Sucesso");
 				estoque.fazPagamento();
 				carregarTitulosEmAbertoNaTabela();
 				atualizarTotalEmAberto();
 			} catch (IOException e1) {
-				// TODO Auto-generated catch block
+				JOptionPane.showMessageDialog(btnPagar, "Erro ao processar pagamento: " + e1.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
 				e1.printStackTrace();
 			}
         	}
@@ -246,6 +258,13 @@ public class JPaginaVendas extends JFrame {
         
         
         
+    }
+	public void setUsuarioLogado(Usuario usuario) {
+        this.usuarioLogado = usuario;
+    }
+
+    public Usuario getUsuarioLogado() {
+        return usuarioLogado;
     }
 	
 	 private void carregarProdutosNaTabela() {
@@ -264,7 +283,6 @@ public class JPaginaVendas extends JFrame {
 		        DecimalFormat df = new DecimalFormat("#,##0.00");
 		        String totalFormatted = df.format(total);
 		        
-		        // Atualizar a tabela com o novo valor
 		        modelTotal.setValueAt(totalFormatted, 0, 0);
 		    } catch (Exception e) {
 		        e.printStackTrace();
@@ -275,11 +293,22 @@ public class JPaginaVendas extends JFrame {
 	 
 	 public void carregarTitulosEmAbertoNaTabela() {
 	        DefaultTableModel model = (DefaultTableModel) table_1.getModel();
-	        model.setRowCount(0); // Limpa a tabela
+	        model.setRowCount(0);
 
 	        List<Object[]> titulosComDetalhes = estoque.getTitulosEmAbertoComDetalhes();
 	        for (Object[] detalhes : titulosComDetalhes) {
 	            model.addRow(detalhes);
+	        }
+	    }
+	 private void initialize() {
+	       
+	        atualizarTotalVendas();
+	    }
+	 private void atualizarTotalVendas() {
+		 
+		 double totalVendas = estoque.calcularTotalTitulosEmAberto();
+		 if (usuarioLogado != null) {
+			 usuarioLogado.setVendas(usuarioLogado.getVendas() + totalVendas);
 	        }
 	    }
 }

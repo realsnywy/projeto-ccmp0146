@@ -97,19 +97,20 @@ public class JLoginV extends JFrame {
                 if (usuario != null) {
                     JOptionPane.showMessageDialog(btnNewButton, "Login bem-sucedido");
                     dispose();
-					JPaginaVendas jPaginaVendas = null;
+                    JPaginaVendas jPaginaVendas = null;
 					try {
 						jPaginaVendas = new JPaginaVendas();
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					jPaginaVendas.setLocationRelativeTo(jPaginaVendas);
-					jPaginaVendas.setVisible(true);
+                    jPaginaVendas.setUsuarioLogado(usuario);
+                    jPaginaVendas.setLocationRelativeTo(null);
+                    jPaginaVendas.setVisible(true);
                 } else {
                     JOptionPane.showMessageDialog(btnNewButton, "Usuário ou senha inválidos", "AVISO", JOptionPane.WARNING_MESSAGE);
                 }
-            }
+             }
 		});
 		btnNewButton.setBackground(new Color(68, 204, 215));
 		btnNewButton.setForeground(new Color(0, 0, 0));

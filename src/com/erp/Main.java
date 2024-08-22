@@ -31,7 +31,7 @@ public class Main extends JFrame {
     private JPanel contentPane;
     private static final String CONFIG_FILE = "config.properties";
     private static final String TIMESTAMP_KEY = "timestamp";
-    private static final long AVISO_INTERVALO = 1000 * 60 * 60 * 24; // 24 horas em milissegundos
+    private static final long AVISO_INTERVALO = 1000 * 60 * 60 * 24;
 
     /**
      * Launch the application.

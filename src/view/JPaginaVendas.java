@@ -8,6 +8,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
 import com.erp.Estoque;
+import com.erp.Main;
 import com.erp.Produto;
 import com.erp.Titulo;
 
@@ -80,6 +81,10 @@ public class JPaginaVendas extends JFrame {
 		JButton btnNewButton_1 = new JButton("AJUDA");
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				dispose();
+				JAjudaVendas jAjudaVendas = new JAjudaVendas();
+				jAjudaVendas.setLocationRelativeTo(jAjudaVendas);
+				jAjudaVendas.setVisible(true);
 			}
 		});
 		btnNewButton_1.setFont(new Font("Tahoma", Font.BOLD, 10));
@@ -133,7 +138,7 @@ public class JPaginaVendas extends JFrame {
 		btnNewButton_1_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();
-				JPrincipal jPrincipal = new JPrincipal();
+				Main jPrincipal = new Main();
 				jPrincipal.setLocationRelativeTo(jPrincipal);
 				jPrincipal.setVisible(true);
 			}

@@ -5,6 +5,9 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import com.erp.Main;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
@@ -47,7 +50,7 @@ public class JLoginG extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 630, 520);
 		contentPane = new JPanel();
-		contentPane.setBackground(new Color(68, 204, 215));
+		contentPane.setBackground(new Color(255, 255, 255));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		setContentPane(contentPane);
@@ -86,8 +89,12 @@ public class JLoginG extends JFrame {
 				if (textFieldUsuario.getText()!=null && 
 						!textFieldUsuario.getText().isEmpty() && 
 						passwordField.getText()!=null && 
-						passwordField.getText().isEmpty()) {
+						!passwordField.getText().isEmpty()) {
 					JOptionPane.showMessageDialog(btnNewButton, "informações Validas");
+					dispose();
+					JGerencia jGerencia = new JGerencia();
+					jGerencia.setLocationRelativeTo(jGerencia);
+					jGerencia.setVisible(true);
 				}else {
 					JOptionPane.showMessageDialog(btnNewButton, "informações inválidas \n Digite novamente", "AVISO", JOptionPane.WARNING_MESSAGE);
 				}
@@ -107,7 +114,7 @@ public class JLoginG extends JFrame {
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();
-				JPrincipal jPrincipal = new JPrincipal();
+				Main jPrincipal = new Main();
 				jPrincipal.setLocationRelativeTo(jPrincipal);
 				jPrincipal.setVisible(true);
 			}

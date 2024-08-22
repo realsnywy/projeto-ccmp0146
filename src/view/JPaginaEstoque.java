@@ -5,6 +5,9 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import com.erp.Main;
+
 import java.awt.Color;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
@@ -59,7 +62,7 @@ public class JPaginaEstoque extends JFrame {
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();
-				JPrincipal jPrincipal = new JPrincipal();
+				Main jPrincipal = new Main();
 				jPrincipal.setLocationRelativeTo(jPrincipal);
 				jPrincipal.setVisible(true);
 			}
@@ -119,6 +122,14 @@ public class JPaginaEstoque extends JFrame {
 		panel.add(btnRemoverProdutos);
 		
 		JButton btnAjuda = new JButton("AJUDA");
+		btnAjuda.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+				JAjudaEstoque jAjudaEstoque = new JAjudaEstoque();
+				jAjudaEstoque.setLocationRelativeTo(jAjudaEstoque);
+				jAjudaEstoque.setVisible(true);
+			}
+		});
 		btnAjuda.setFont(new Font("Tahoma", Font.BOLD, 15));
 		btnAjuda.setBounds(144, 249, 209, 39);
 		panel.add(btnAjuda);

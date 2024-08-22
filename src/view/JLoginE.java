@@ -5,6 +5,9 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import com.erp.Main;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
@@ -111,7 +114,7 @@ public class JLoginE extends JFrame {
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();
-				JPrincipal jPrincipal = new JPrincipal();
+				Main jPrincipal = new Main();
 				jPrincipal.setLocationRelativeTo(jPrincipal);
 				jPrincipal.setVisible(true);
 			}

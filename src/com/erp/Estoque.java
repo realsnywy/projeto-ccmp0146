@@ -2,7 +2,6 @@ package com.erp;
 
 import java.io.*;
 import java.util.*;
-
 import javax.swing.JTextField;
 
 public class Estoque {
@@ -18,11 +17,15 @@ public class Estoque {
 		carregaTitulos();
 	}
 
-	public void addProduto(JTextField textFieldNomeDoProduto, JTextField textFieldIdProduto, JTextField textFieldPrecoProduto) throws IOException {
-		String id = textFieldIdProduto.getText();
+	public void addProduto(JTextField textFieldNomeDoProduto, JTextField textFieldIdProduto, JTextField textFieldPrecoProduto, JTextField textFieldQuantidadeProduto) throws IOException {
+		//Aqui o tamanho1 recebe o tamanho do List de produtos e adiciono mais 1 para que o id do produto seja incrementado, no tamanho2 eu converto para string.
+		int tamanho1 = produtos.size() + 1;
+		String tamanho2 = tamanho1 + "";
+		String id = tamanho2;
 		String nome = textFieldNomeDoProduto.getText();
 		double preco = Double.parseDouble(textFieldPrecoProduto.getText());
-		Produto produto = new Produto(id, nome, preco);
+		int quantidade = Integer.parseInt(textFieldQuantidadeProduto.getText());
+		Produto produto = new Produto(id, nome, preco, quantidade);
 		produtos.add(produto);
 		saveProdutos();
 	}

@@ -100,17 +100,17 @@ public class JAjuda extends JFrame {
         DefaultMutableTreeNode estoqueNode = new DefaultMutableTreeNode("Estoque");
         DefaultMutableTreeNode adicionarProdutoNode = new DefaultMutableTreeNode("Adicionar produto");
         estoqueNode.add(adicionarProdutoNode);
-        estoqueNode.add(new DefaultMutableTreeNode("Remover produto"));
+        //estoqueNode.add(new DefaultMutableTreeNode("Remover produto"));
 
         DefaultMutableTreeNode vendaNode = new DefaultMutableTreeNode("Venda");
         vendaNode.add(new DefaultMutableTreeNode("Adicionar ao carrinho"));
         vendaNode.add(new DefaultMutableTreeNode("Finalizar venda"));
-        vendaNode.add(new DefaultMutableTreeNode("Cancelar venda"));
+        //vendaNode.add(new DefaultMutableTreeNode("Cancelar venda"));
 
         DefaultMutableTreeNode gerenciaNode = new DefaultMutableTreeNode("Gerência");
         gerenciaNode.add(new DefaultMutableTreeNode("Gerenciar usuários"));
-        gerenciaNode.add(new DefaultMutableTreeNode("Relatórios"));
-        gerenciaNode.add(new DefaultMutableTreeNode("Configurações"));
+        //gerenciaNode.add(new DefaultMutableTreeNode("Relatórios"));
+        //gerenciaNode.add(new DefaultMutableTreeNode("Configurações"));
 
         root.add(estoqueNode);
         root.add(vendaNode);
@@ -150,37 +150,36 @@ public class JAjuda extends JFrame {
                     case "Remover produto":
                         textArea.setText("Para remover um produto, informe o Id do produto \n"
                         		       + "que deseja remover na lista de estoque exibida ao lado.\n"
-                        		       + "Clique em 'Remover' e confirme a remoção.");
+                        		       + "Clique em 'Remover'.");
                         break;
-                    case "Atualizar quantidade":
+                    /*case "Atualizar quantidade":
                         textArea.setText("Para atualizar a quantidade de um produto, \n"
                                        + "selecione o produto na lista, clique em \n"
                                        + "'Atualizar quantidade', insira a nova \n"
                                        + "quantidade e confirme.");
-                        break;
+                        break; */ //Sem opção de atualizar quantidades
                     case "Adicionar ao carrinho":
                         textArea.setText("Para adicionar um item ao carrinho, \n"
-                                       + "selecione o produto e clique em \n"
+                                       + "digite o id do produto e clique em \n"
                                        + "'Adicionar ao carrinho'. O produto \n"
-                                       + "será listado na venda atual.");
+                                       + "será listado nos títulos em aberto.");
                         break;
                     case "Finalizar venda":
                         textArea.setText("Para finalizar a venda, confira os itens \n"
-                                       + "no carrinho e clique em 'Finalizar venda'.\n"
-                                       + "Selecione o método de pagamento \n"
-                                       + "e conclua a venda.");
+                                       + "no carrinho e clique em 'PAGAR'.\n"
+                                       );
                         break;
-                    case "Cancelar venda":
+                    /*case "Cancelar venda":
                         textArea.setText("Para cancelar uma venda em andamento, \n"
                                        + "clique em 'Cancelar venda'. Todos os \n"
                                        + "itens do carrinho serão removidos.");
-                        break;
+                        break; */ // Ainda n tem a opção de cancelar
                     case "Gerenciar usuários":
                         textArea.setText("Para gerenciar usuários, acesse a área de \n"
-                                       + "gerência. Adicione, remova ou edite \n"
+                                       + "gerência e depois em 'CADASTRAR USUARIO'. Adicione, remova ou edite \n"
                                        + "informações dos usuários.");
                         break;
-                    case "Relatórios":
+                    /*case "Relatórios":
                         textArea.setText("Acesse relatórios para visualizar dados \n"
                                        + "de vendas, estoque e desempenho. \n"
                                        + "Selecione o período desejado e gere \n"
@@ -190,7 +189,7 @@ public class JAjuda extends JFrame {
                         textArea.setText("No menu de configurações, ajuste as \n"
                                        + "preferências do sistema e personalize \n"
                                        + "o aplicativo conforme necessário.");
-                        break;
+                        break;*/ //Ainda n tem opções de configurações e Relatórios
                     default:
                         textArea.setText("");
                 }

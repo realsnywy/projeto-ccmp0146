@@ -16,6 +16,7 @@ import javax.swing.JOptionPane;
 
 import java.awt.Font;
 import javax.swing.SwingConstants;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPasswordField;
 import java.awt.event.ActionListener;
@@ -58,6 +59,9 @@ public class JAdicionarProdutos extends JFrame {
 	 */
 	public JAdicionarProdutos() throws IOException {
 		
+		ImageIcon logo = new ImageIcon(getClass().getClassLoader().getResource("logo.jpg"));
+        setIconImage(logo.getImage());
+        setTitle("StoSale");
 		estoque = new Estoque();
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -108,7 +112,7 @@ public class JAdicionarProdutos extends JFrame {
 		adicionarProduto.setForeground(Color.BLACK);
 		adicionarProduto.setFont(new Font("Times New Roman", Font.BOLD, 14));
 		adicionarProduto.setBackground(new Color(68, 204, 215));
-		adicionarProduto.setBounds(108, 362, 132, 35);
+		adicionarProduto.setBounds(100, 350, 132, 35);
 		panel.add(adicionarProduto);
 		
 		JButton btnNewButton_1 = new JButton("VOLTAR");

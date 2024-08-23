@@ -13,6 +13,7 @@ import javax.swing.JTextField;
 import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.SwingConstants;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPasswordField;
 import java.awt.event.ActionListener;
@@ -44,6 +45,11 @@ public class JPaginaEstoque extends JFrame {
 	 * Create the frame.
 	 */
 	public JPaginaEstoque() {
+		
+		ImageIcon logo = new ImageIcon(getClass().getClassLoader().getResource("logo.jpg"));
+        setIconImage(logo.getImage());
+        setTitle("StoSale");
+        
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 630, 520);
 		contentPane = new JPanel();

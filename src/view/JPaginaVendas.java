@@ -21,6 +21,7 @@ import javax.swing.JOptionPane;
 
 import java.awt.Font;
 import javax.swing.SwingConstants;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPasswordField;
 import java.awt.event.ActionListener;
@@ -66,6 +67,10 @@ public class JPaginaVendas extends JFrame {
     
 	public JPaginaVendas() throws IOException {
 		
+		ImageIcon logo = new ImageIcon(getClass().getClassLoader().getResource("logo.jpg"));
+        setIconImage(logo.getImage());
+        setTitle("StoSale");
+        
         this.usuarioDAO = new UsuarioDAO();
         this.estoque = new Estoque();
         initialize();

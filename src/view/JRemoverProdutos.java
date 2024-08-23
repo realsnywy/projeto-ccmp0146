@@ -25,6 +25,7 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.AbstractListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JTextPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -58,6 +59,9 @@ public class JRemoverProdutos extends JFrame {
 	 */
 	public JRemoverProdutos() throws IOException {
 		
+		ImageIcon logo = new ImageIcon(getClass().getClassLoader().getResource("logo.jpg"));
+        setIconImage(logo.getImage());
+        setTitle("StoSale");
 		estoque = new Estoque();
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

@@ -16,6 +16,7 @@ import javax.swing.SwingConstants;
 import java.awt.Color;
 import java.awt.Font;
 import javax.swing.JTextField;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPasswordField;
 import java.awt.event.ActionListener;
@@ -49,6 +50,11 @@ public class JLoginG extends JFrame {
 	 * Create the frame.
 	 */
 	public JLoginG() {
+		
+		ImageIcon logo = new ImageIcon(getClass().getClassLoader().getResource("logo.jpg"));
+        setIconImage(logo.getImage());
+        setTitle("StoSale");
+        
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 630, 520);
 		contentPane = new JPanel();

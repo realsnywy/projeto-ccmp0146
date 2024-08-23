@@ -11,6 +11,8 @@ import javax.swing.JTextArea;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import java.awt.Color;
+
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
@@ -47,6 +49,11 @@ public class JAjudaVendas extends JFrame {
      * Create the frame.
      */
     public JAjudaVendas() {
+    	
+    	ImageIcon logo = new ImageIcon(getClass().getClassLoader().getResource("logo.jpg"));
+        setIconImage(logo.getImage());
+        setTitle("StoSale");
+        
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 630, 520);
         contentPane = new JPanel();

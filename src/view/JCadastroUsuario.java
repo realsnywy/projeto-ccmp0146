@@ -7,6 +7,8 @@ import javax.swing.border.EmptyBorder;
 import com.erp.Criptografia;
 import com.erp.Usuario;
 import com.erp.UsuarioDAO;
+
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -45,6 +47,11 @@ public class JCadastroUsuario extends JFrame {
     }
 
     public JCadastroUsuario() {
+    	
+    	ImageIcon logo = new ImageIcon(getClass().getClassLoader().getResource("logo.jpg"));
+        setIconImage(logo.getImage());
+        setTitle("StoSale");
+        
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 913, 764);
         contentPane = new JPanel();

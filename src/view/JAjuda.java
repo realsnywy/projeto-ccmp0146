@@ -100,7 +100,7 @@ public class JAjuda extends JFrame {
         DefaultMutableTreeNode estoqueNode = new DefaultMutableTreeNode("Estoque");
         DefaultMutableTreeNode adicionarProdutoNode = new DefaultMutableTreeNode("Adicionar produto");
         estoqueNode.add(adicionarProdutoNode);
-        //estoqueNode.add(new DefaultMutableTreeNode("Remover produto"));
+        estoqueNode.add(new DefaultMutableTreeNode("Remover produto"));
 
         DefaultMutableTreeNode vendaNode = new DefaultMutableTreeNode("Venda");
         vendaNode.add(new DefaultMutableTreeNode("Adicionar ao carrinho"));

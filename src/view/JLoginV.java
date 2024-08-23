@@ -33,6 +33,7 @@ public class JLoginV extends JFrame {
 	/**
 	 * Launch the application.
 	 */
+	ImageIcon logo = new ImageIcon(getClass().getClassLoader().getResource("logo.png"));
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -51,11 +52,8 @@ public class JLoginV extends JFrame {
 	 * Create the frame.
 	 */
 	public JLoginV() {
-		
-		ImageIcon logo = new ImageIcon(getClass().getClassLoader().getResource("logo.jpg"));
-        setIconImage(logo.getImage());
-        setTitle("StoSale");
-        
+		setIconImage(logo.getImage());
+		setTitle("StoSale");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 630, 520);
 		contentPane = new JPanel();

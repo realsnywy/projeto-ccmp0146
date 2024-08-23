@@ -40,6 +40,7 @@ public class JRemoverProdutos extends JFrame {
 	/**
 	 * Launch the application.
 	 */
+	ImageIcon logo = new ImageIcon(getClass().getClassLoader().getResource("logo.png"));
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -59,10 +60,10 @@ public class JRemoverProdutos extends JFrame {
 	 */
 	public JRemoverProdutos() throws IOException {
 		
-		ImageIcon logo = new ImageIcon(getClass().getClassLoader().getResource("logo.jpg"));
-        setIconImage(logo.getImage());
-        setTitle("StoSale");
 		estoque = new Estoque();
+		
+		setIconImage(logo.getImage());
+		setTitle("StoSale");
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 890, 520);

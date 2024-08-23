@@ -26,7 +26,6 @@ import javax.swing.border.EmptyBorder;
 import view.JLoginE;
 import view.JLoginG;
 import view.JLoginV;
-import java.awt.Image;
 
 public class Main extends JFrame {
 
@@ -35,11 +34,11 @@ public class Main extends JFrame {
     private static final String CONFIG_FILE = "config.properties";
     private static final String TIMESTAMP_KEY = "timestamp";
     private static final long AVISO_INTERVALO = 1000 * 60 * 60 * 24;
-    
-    
+
     /**
      * Launch the application.
      */
+    ImageIcon logo = new ImageIcon(getClass().getClassLoader().getResource("logo.png"));
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -58,12 +57,6 @@ public class Main extends JFrame {
      * Create the frame.
      */
     public Main() {
-    	
-    	ImageIcon logo = new ImageIcon(getClass().getClassLoader().getResource("logo.jpg"));
-    	ImageIcon logo2 = new ImageIcon(getClass().getClassLoader().getResource("logo.png"));
-        setIconImage(logo.getImage());
-        setTitle("StoSale");
-        
         if (isAvisoNecessario()) {
             // Mostra o aviso
             JOptionPane.showMessageDialog(null, "No momento, vamos verificar se há atualizações. Aguarde um pouco!",
@@ -79,6 +72,9 @@ public class Main extends JFrame {
             // Atualiza o timestamp no arquivo de configuração
             atualizarTimestamp();
         }
+        
+        setIconImage(logo.getImage());
+        setTitle("StoSale");
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 630, 520);
@@ -97,7 +93,7 @@ public class Main extends JFrame {
         JLabel lblNewLabel = new JLabel("Bem-Vindo");
         lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
         lblNewLabel.setFont(new Font("Times New Roman", Font.BOLD, 20));
-        lblNewLabel.setBounds(164, 104, 135, 25);
+        lblNewLabel.setBounds(164, 71, 135, 25);
         panel.add(lblNewLabel);
 
         JButton btnNewButton = new JButton("ESTOQUE");
@@ -110,7 +106,7 @@ public class Main extends JFrame {
             }
         });
         btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 15));
-        btnNewButton.setBounds(141, 201, 181, 39);
+        btnNewButton.setBounds(141, 168, 181, 39);
         panel.add(btnNewButton);
 
         JButton btnVenda = new JButton("VENDAS");
@@ -123,7 +119,7 @@ public class Main extends JFrame {
             }
         });
         btnVenda.setFont(new Font("Tahoma", Font.BOLD, 15));
-        btnVenda.setBounds(141, 252, 181, 39);
+        btnVenda.setBounds(141, 219, 181, 39);
         panel.add(btnVenda);
 
         JButton btnGerencia = new JButton("GERENCIA");
@@ -136,33 +132,33 @@ public class Main extends JFrame {
             }
         });
         btnGerencia.setFont(new Font("Tahoma", Font.BOLD, 15));
-        btnGerencia.setBounds(141, 301, 181, 39);
+        btnGerencia.setBounds(141, 268, 181, 39);
         panel.add(btnGerencia);
 
         JLabel lblNewLabel_1 = new JLabel("Selecione O Setor");
         lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 15));
         lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
-        lblNewLabel_1.setBounds(141, 169, 181, 13);
+        lblNewLabel_1.setBounds(141, 136, 181, 13);
         panel.add(lblNewLabel_1);
 
         JLabel lblNewLabel_2 = new JLabel("StoSALE");
         lblNewLabel_2.setHorizontalAlignment(SwingConstants.CENTER);
         lblNewLabel_2.setFont(new Font("Tahoma", Font.PLAIN, 32));
-        lblNewLabel_2.setBounds(157, 74, 148, 31);
+        lblNewLabel_2.setBounds(157, 41, 148, 31);
         panel.add(lblNewLabel_2);
 
         JLabel lblNewLabel_3 = new JLabel("stockreserveoficial@gmail.com");
         lblNewLabel_3.setFont(new Font("Tahoma", Font.PLAIN, 12));
-        lblNewLabel_3.setBounds(302, 420, 157, 13);
+        lblNewLabel_3.setBounds(302, 406, 157, 13);
         panel.add(lblNewLabel_3);
 
         JLabel lblNewLabel_4 = new JLabel("SAC");
         lblNewLabel_4.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        lblNewLabel_4.setBounds(302, 403, 45, 13);
+        lblNewLabel_4.setBounds(302, 389, 45, 13);
         panel.add(lblNewLabel_4);
 
         JPanel panel_1 = new JPanel();
-        panel_1.setBounds(302, 398, 148, 35);
+        panel_1.setBounds(302, 384, 148, 35);
         panel.add(panel_1);
 
         JButton btnAtivarLicenca = new JButton("Ativar Licença");
@@ -186,15 +182,8 @@ public class Main extends JFrame {
             }
         });
         btnAtivarLicenca.setFont(new Font("Tahoma", Font.BOLD, 12));
-        btnAtivarLicenca.setBounds(302, 364, 148, 23);
+        btnAtivarLicenca.setBounds(302, 350, 148, 23);
         panel.add(btnAtivarLicenca);
-        
-        Image image = logo2.getImage();
-        Image resizedImage = image.getScaledInstance(175, 100, java.awt.Image.SCALE_SMOOTH);
-        logo2 = new ImageIcon(resizedImage);
-        JLabel lblNewLabel_5 = new JLabel(logo2);
-        lblNewLabel_5.setBounds(170, 0, 123, 86);
-        panel.add(lblNewLabel_5);
     }
 
     private boolean isAvisoNecessario() {

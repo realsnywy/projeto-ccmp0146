@@ -48,6 +48,7 @@ public class JPaginaVendas extends JFrame {
 	/**
 	 * Launch the application.
 	 */
+	ImageIcon logo = new ImageIcon(getClass().getClassLoader().getResource("logo.png"));
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -67,15 +68,13 @@ public class JPaginaVendas extends JFrame {
     
 	public JPaginaVendas() throws IOException {
 		
-		ImageIcon logo = new ImageIcon(getClass().getClassLoader().getResource("logo.jpg"));
-        setIconImage(logo.getImage());
-        setTitle("StoSale");
-        
         this.usuarioDAO = new UsuarioDAO();
         this.estoque = new Estoque();
         initialize();
 		estoque = new Estoque();
 		
+		setIconImage(logo.getImage());
+		setTitle("StoSale");
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 900, 780);

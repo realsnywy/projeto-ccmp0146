@@ -32,7 +32,8 @@ public class JCadastroUsuario extends JFrame {
     private UsuarioDAO usuarioDAO = new UsuarioDAO();
     private JTextField textFieldSenha;
     private JComboBox<String> comboBoxSetor;
-
+    
+    ImageIcon logo = new ImageIcon(getClass().getClassLoader().getResource("logo.png"));
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -47,11 +48,8 @@ public class JCadastroUsuario extends JFrame {
     }
 
     public JCadastroUsuario() {
-    	
-    	ImageIcon logo = new ImageIcon(getClass().getClassLoader().getResource("logo.jpg"));
-        setIconImage(logo.getImage());
-        setTitle("StoSale");
-        
+    	setIconImage(logo.getImage());
+		setTitle("StoSale");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 913, 764);
         contentPane = new JPanel();

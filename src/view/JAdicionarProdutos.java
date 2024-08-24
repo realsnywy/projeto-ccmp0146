@@ -31,7 +31,6 @@ public class JAdicionarProdutos extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField textFieldNomeDoProduto;
-	private JTextField textFieldIdProduto;
 	private JTextField textFieldPrecoProduto;
 	private JTextField textFieldQuantidadeProduto;
 	private JTable table;
@@ -94,16 +93,15 @@ public class JAdicionarProdutos extends JFrame {
 		adicionarProduto.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					estoque.addProduto(textFieldNomeDoProduto, textFieldIdProduto, textFieldPrecoProduto, textFieldQuantidadeProduto);
+					estoque.addProduto(textFieldNomeDoProduto, textFieldPrecoProduto, textFieldQuantidadeProduto);
+					textFieldNomeDoProduto.setText("");
+					textFieldPrecoProduto.setText("");
+					textFieldQuantidadeProduto.setText("");
+					JOptionPane.showMessageDialog(adicionarProduto, "Produto Adicionado Com Sucesso", "AVISO", JOptionPane.INFORMATION_MESSAGE);
                     carregarProdutosNaTabela();
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
-				textFieldNomeDoProduto.setText("");
-				textFieldIdProduto.setText("");
-				textFieldPrecoProduto.setText("");
-				textFieldQuantidadeProduto.setText("");
-				JOptionPane.showMessageDialog(adicionarProduto, "Produto Adicionado Com Sucesso", "AVISO", JOptionPane.INFORMATION_MESSAGE);
 				
 			}
 		});

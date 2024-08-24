@@ -28,6 +28,9 @@ public class Produto {
 	public int getQuantidade() {
 		return quantidade;
 	}
+	public int setQuantidade(int quantidade) {
+		return this.quantidade = quantidade;
+	}
 
 	@Override
 	public String toString() {

@@ -97,15 +97,35 @@ public class JRemoverProdutos extends JFrame {
 		JButton btnRemover = new JButton("REMOVER");
 		btnRemover.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				 try {
-	                    estoque.removerProdutoEstoque(textFieldRemover);
-	                    carregarProdutosNaTabela();
-	                } catch (IOException e1) {
-	                    e1.printStackTrace();
-	                }
-				 textFieldRemover.setText("");
-				 JOptionPane.showMessageDialog(btnRemover, "Produto Removido Com Sucesso", "AVISO", JOptionPane.INFORMATION_MESSAGE);
-	            }
+				try {
+			        String idProduto = textFieldRemover.getText().trim();
+			        boolean produtoRemovido = false;
+			        
+			        // Verifica se o campo de texto não está vazio
+			        if (!idProduto.isEmpty()) {
+			            // Itera sobre os produtos
+			            for (Produto p : estoque.getProdutos()) {
+			                if (p.getId().equals(idProduto)) {
+			                    estoque.removerProdutoEstoque(textFieldRemover);  // Remove o produto
+			                    carregarProdutosNaTabela();  // Atualiza a tabela
+			                    textFieldRemover.setText("");  // Limpa o campo de texto
+			                    JOptionPane.showMessageDialog(btnRemover, "Produto Removido Com Sucesso", "AVISO", JOptionPane.INFORMATION_MESSAGE);
+			                    produtoRemovido = true;
+			                    break;  // Sai do loop após encontrar e remover o produto
+			                }
+			            }
+			            
+			            // Se nenhum produto foi removido, exibe mensagem de erro
+			            if (!produtoRemovido) {
+			                JOptionPane.showMessageDialog(btnRemover, "ERRO: O ID do produto é inválido", "AVISO", JOptionPane.WARNING_MESSAGE);
+			            }
+			        } else {
+			            JOptionPane.showMessageDialog(btnRemover, "ERRO: Por favor, insira um ID", "AVISO", JOptionPane.WARNING_MESSAGE);
+			        }
+			    } catch (IOException e1) {
+			        e1.printStackTrace();
+			    }
+			}
 		});
 		btnRemover.setForeground(Color.BLACK);
 		btnRemover.setFont(new Font("Times New Roman", Font.BOLD, 14));
@@ -147,10 +167,49 @@ public class JRemoverProdutos extends JFrame {
 			new Object[][] {
 			},
 			new String[] {
-				"NOME", "PRE\u00C7O $", "ID"
+				"NOME", "PRE\u00C7O $", "ID", "QUANTIDADE"
 			}
 		));
 		scrollPane.setViewportView(table);
+		
+		JButton btnRetirarDoEstque = new JButton("RETIRAR DO ESTOQUE");
+		btnRetirarDoEstque.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+			        String idProduto = textFieldRemover.getText().trim();
+			        boolean produtoRemovido = false;
+			        
+			        // Verifica se o campo de texto não está vazio
+			        if (!idProduto.isEmpty()) {
+			            // Itera sobre os produtos
+			            for (Produto p : estoque.getProdutos()) {
+			                if (p.getId().equals(idProduto)) {
+			                    estoque.retirarProdutoEstoque(textFieldRemover);  // Retira o produto
+			                    carregarProdutosNaTabela();  // Atualiza a tabela
+			                    textFieldRemover.setText("");  // Limpa o campo de texto
+			                    JOptionPane.showMessageDialog(btnRemover, "Produto Removido Com Sucesso", "AVISO", JOptionPane.INFORMATION_MESSAGE);
+			                    produtoRemovido = true;
+			                    break;  // Sai do loop após encontrar e retirar o produto
+			                }
+			            }
+			            
+			            // Se nenhum produto foi retirado, exibe mensagem de erro
+			            if (!produtoRemovido) {
+			                JOptionPane.showMessageDialog(btnRemover, "ERRO: O ID do produto é inválido", "AVISO", JOptionPane.WARNING_MESSAGE);
+			            }
+			        } else {
+			            JOptionPane.showMessageDialog(btnRemover, "ERRO: Por favor, insira um ID", "AVISO", JOptionPane.WARNING_MESSAGE);
+			        }
+			    } catch (IOException e1) {
+			        e1.printStackTrace();
+			    }
+			}
+		});
+		btnRetirarDoEstque.setForeground(Color.BLACK);
+		btnRetirarDoEstque.setFont(new Font("Times New Roman", Font.BOLD, 14));
+		btnRetirarDoEstque.setBackground(new Color(68, 204, 215));
+		btnRetirarDoEstque.setBounds(44, 325, 216, 35);
+		panel.add(btnRetirarDoEstque);
 		 // Carrega os produtos na tabela ao iniciar o frame
         carregarProdutosNaTabela();
     }
@@ -164,7 +223,7 @@ public class JRemoverProdutos extends JFrame {
 
         List<Produto> produtos = estoque.getProdutos();
         for (Produto produto : produtos) {
-            model.addRow(new Object[]{produto.getNome(), produto.getPreco(), produto.getId()});
+            model.addRow(new Object[]{produto.getNome(), produto.getPreco(), produto.getId(), produto.getQuantidade()});
         }
 		
 	}

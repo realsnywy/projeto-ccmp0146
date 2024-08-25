@@ -32,8 +32,8 @@ public class JAdicionarProdutos extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField textFieldNomeDoProduto;
-	private JTextField textFieldIdProduto;
 	private JTextField textFieldPrecoProduto;
+	private JTextField textFieldQuantidadeProduto;
 	private JTable table;
 	private Estoque estoque;
 
@@ -89,24 +89,24 @@ public class JAdicionarProdutos extends JFrame {
 		lblNewLabel_2.setBounds(100, 137, 148, 19);
 		panel.add(lblNewLabel_2);
 		
-		JLabel lblNewLabel_3 = new JLabel("ID DO PRODUTO :");
+		JLabel lblNewLabel_3 = new JLabel("QUANTIDADE DO PRODUTO :");
 		lblNewLabel_3.setFont(new Font("Verdana", Font.BOLD, 12));
-		lblNewLabel_3.setBounds(112, 203, 125, 13);
+		lblNewLabel_3.setBounds(74, 203, 200, 13);
 		panel.add(lblNewLabel_3);
 		
 		JButton adicionarProduto = new JButton("ADICIONAR");
 		adicionarProduto.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					estoque.addProduto(textFieldNomeDoProduto, textFieldIdProduto, textFieldPrecoProduto);
+					estoque.addProduto(textFieldNomeDoProduto, textFieldPrecoProduto, textFieldQuantidadeProduto);
+					textFieldNomeDoProduto.setText("");
+					textFieldPrecoProduto.setText("");
+					textFieldQuantidadeProduto.setText("");
+					JOptionPane.showMessageDialog(adicionarProduto, "Produto Adicionado Com Sucesso", "AVISO", JOptionPane.INFORMATION_MESSAGE);
                     carregarProdutosNaTabela();
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
-				textFieldNomeDoProduto.setText("");
-				textFieldIdProduto.setText("");
-				textFieldPrecoProduto.setText("");
-				JOptionPane.showMessageDialog(adicionarProduto, "Produto Adicionado Com Sucesso", "AVISO", JOptionPane.INFORMATION_MESSAGE);
 				
 			}
 		});
@@ -146,15 +146,15 @@ public class JAdicionarProdutos extends JFrame {
 		lblNewLabel_2_2.setBounds(96, 263, 157, 19);
 		panel.add(lblNewLabel_2_2);
 		
-		textFieldIdProduto = new JTextField();
-		textFieldIdProduto.setColumns(10);
-		textFieldIdProduto.setBounds(37, 226, 275, 27);
-		panel.add(textFieldIdProduto);
-		
 		textFieldPrecoProduto = new JTextField();
 		textFieldPrecoProduto.setColumns(10);
 		textFieldPrecoProduto.setBounds(37, 292, 275, 27);
 		panel.add(textFieldPrecoProduto);
+
+		textFieldQuantidadeProduto = new JTextField();
+		textFieldQuantidadeProduto.setColumns(10);
+		textFieldQuantidadeProduto.setBounds(37, 226, 275, 27);
+		panel.add(textFieldQuantidadeProduto);
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(341, 32, 505, 408);
@@ -165,7 +165,7 @@ public class JAdicionarProdutos extends JFrame {
 			new Object[][] {
 			},
 			new String[] {
-				"NOME", "PRE\u00C7O $", "ID"
+				"NOME", "PREÇO $", "ID", "QUANTIDADE"
 			}
 		));
 		scrollPane.setViewportView(table);
@@ -188,7 +188,7 @@ public class JAdicionarProdutos extends JFrame {
 
         List<Produto> produtos = estoque.getProdutos();
         for (Produto produto : produtos) {
-            model.addRow(new Object[]{produto.getNome(), produto.getPreco(), produto.getId()});
+            model.addRow(new Object[]{produto.getNome(), produto.getPreco(), produto.getId(), produto.getQuantidade()});
         }
 		
 	}

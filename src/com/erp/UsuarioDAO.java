@@ -11,9 +11,9 @@ public class UsuarioDAO {
         carregarUsuarios();
     }
 
-    public Usuario buscarUsuario(String nome, String senha) {
-        Usuario usuario = usuarios.get(nome);
-        if (usuario != null && usuario.getSenha().equals(Criptografia.criptografar(senha))) {
+    public Usuario buscarUsuario(String nome, String senhaCriptografada) {
+        Usuario usuario = buscarUsuarioPorNome(nome);
+        if (usuario != null && usuario.getSenha().equals(senhaCriptografada)) {
             return usuario;
         }
         return null;

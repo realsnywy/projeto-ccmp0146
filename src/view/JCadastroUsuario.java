@@ -33,7 +33,6 @@ public class JCadastroUsuario extends JFrame {
     private JTextField textFieldSenha;
     private JComboBox<String> comboBoxSetor;
     
-    ImageIcon logo = new ImageIcon(getClass().getClassLoader().getResource("logo.png"));
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -48,8 +47,7 @@ public class JCadastroUsuario extends JFrame {
     }
 
     public JCadastroUsuario() {
-    	setIconImage(logo.getImage());
-		setTitle("StoSale");
+        
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 913, 764);
         contentPane = new JPanel();
@@ -121,7 +119,7 @@ public class JCadastroUsuario extends JFrame {
         lblNewLabel_2_1.setBounds(343, 22, 148, 31);
         panel.add(lblNewLabel_2_1);
 
-        JLabel lblGerencia = new JLabel("GERENCIA");
+        JLabel lblGerencia = new JLabel("GERÊNCIA");
         lblGerencia.setHorizontalAlignment(SwingConstants.CENTER);
         lblGerencia.setFont(new Font("Times New Roman", Font.BOLD, 20));
         lblGerencia.setBounds(350, 52, 135, 25);
@@ -143,16 +141,15 @@ public class JCadastroUsuario extends JFrame {
         btnVoltar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dispose();
-				JGerencia jGerencia = new JGerencia();
-				jGerencia.setLocationRelativeTo(jGerencia);
-				jGerencia.setVisible(true);
+                JGerencia jGerencia = new JGerencia();
+                jGerencia.setLocationRelativeTo(jGerencia);
+                jGerencia.setVisible(true);
             }
         });
         btnVoltar.setFont(new Font("Tahoma", Font.BOLD, 10));
         btnVoltar.setBounds(20, 10, 85, 21);
         panel.add(btnVoltar);
 
-        // Substitui o JTextField por JComboBox
         comboBoxSetor = new JComboBox<>(new String[] {"Vendas", "Estoque", "Gerência"});
         comboBoxSetor.setBounds(495, 124, 190, 31);
         panel.add(comboBoxSetor);
@@ -164,7 +161,6 @@ public class JCadastroUsuario extends JFrame {
         panel.add(lblSetor);
     }
 
-    // Gera um nome de usuário único
     private String gerarNomeUsuarioUnico(String nomeColaborador) {
         String base = nomeColaborador.replaceAll("\\s+", "").toLowerCase();
         base = base.length() > 5 ? base.substring(0, 5) : base;
@@ -185,14 +181,16 @@ public class JCadastroUsuario extends JFrame {
         return nomeUsuario;
     }
 
-    // Adiciona um novo usuário ao DAO
     private void adicionarUsuario() {
-        String nomeColaborador = textFieldNomeDoColaborador.getText();
-        String senha = textFieldSenha.getText();
+        String nomeColaborador = textFieldNomeDoColaborador.getText().trim();
+        String senha = textFieldSenha.getText().trim();
+        if (nomeColaborador.isEmpty() || senha.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Nome e senha não podem estar vazios.");
+            return;
+        }
         String nomeUsuario = gerarNomeUsuarioUnico(nomeColaborador);
         String setor = (String) comboBoxSetor.getSelectedItem();
-        double vendas = 0.0; // Inicializa com 0, ou ajuste conforme necessário
-        JOptionPane.showMessageDialog(this, "A Senha do Colaborador é: " + senha);
+        double vendas = 0.0;
         Usuario usuario = new Usuario(nomeUsuario, Criptografia.criptografar(senha), nomeColaborador, setor, vendas);
 
         usuarioDAO.adicionarUsuario(usuario);
@@ -201,7 +199,6 @@ public class JCadastroUsuario extends JFrame {
         atualizarTabela();
     }
 
-    // Remove um usuário do DAO
     private void removerUsuario() {
         int linhaSelecionada = table.getSelectedRow();
         if (linhaSelecionada != -1) {
@@ -213,7 +210,6 @@ public class JCadastroUsuario extends JFrame {
         }
     }
 
-    // Redefine a senha de um usuário
     private void redefinirSenha() {
         int linhaSelecionada = table.getSelectedRow();
         if (linhaSelecionada != -1) {
@@ -231,7 +227,6 @@ public class JCadastroUsuario extends JFrame {
         }
     }
 
-    // Atualiza a tabela com os dados mais recentes
     private void atualizarTabela() {
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);

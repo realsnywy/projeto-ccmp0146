@@ -2,7 +2,6 @@ package com.erp;
 
 import java.io.*;
 import java.util.*;
-
 import javax.swing.JTextField;
 
 public class Estoque {
@@ -17,52 +16,102 @@ public class Estoque {
 		carregaProduto();
 		carregaTitulos();
 	}
+	
+	public List<Produto> getProdutos() {
+        return produtos;
+    }
 
-	public void addProduto(JTextField textFieldNomeDoProduto, JTextField textFieldIdProduto, JTextField textFieldPrecoProduto) throws IOException {
-		String id = textFieldIdProduto.getText();
-		String nome = textFieldNomeDoProduto.getText();
-		double preco = Double.parseDouble(textFieldPrecoProduto.getText());
-		Produto produto = new Produto(id, nome, preco);
-		produtos.add(produto);
-		saveProdutos();
+	public void addProduto(JTextField textFieldNomeDoProduto, JTextField textFieldPrecoProduto, JTextField textFieldQuantidadeProduto) throws IOException {
+	    String nome = textFieldNomeDoProduto.getText();
+	    double preco = Double.parseDouble(textFieldPrecoProduto.getText());
+	    int quantidade = Integer.parseInt(textFieldQuantidadeProduto.getText());
+	    
+	    Produto produtoExistente = null;
+	    for (Produto p : produtos) {
+	        if (p.getNome().equalsIgnoreCase(nome)) { // Verifica se o produto já existe pelo nome
+	            produtoExistente = p;
+	            break;
+	        }
+	    }
+	    
+	    if (produtoExistente != null) {
+	        // Produto já existe, incrementa a quantidade
+	        produtoExistente.setQuantidade(produtoExistente.getQuantidade() + quantidade);
+	    } else {
+	        // Produto não existe, cria um novo
+	        int tamanho1 = produtos.size() + 1;
+	        String id = String.valueOf(tamanho1);
+	        Produto novoProduto = new Produto(id, nome, preco, quantidade);
+	        produtos.add(novoProduto);
+	    }
+	    
+	    saveProdutos();
 	}
 	
-	public void removerProdutoEstoque(JTextField textFieldRemover) throws IOException {//Remoção de produtos em estoque
-		String idProduto;
-		idProduto = textFieldRemover.getText();
+	public void removerProdutoEstoque(JTextField textFieldRemover, JTextField textFieldQuantidade) throws IOException {//Remoção individual de produtos em estoque
+
+        String idProduto = textFieldRemover.getText().trim();
+        int quantidade = Integer.parseInt(textFieldQuantidade.getText().trim());
+		
 		for (Produto p : produtos) {
 			if (p.getId().equals(idProduto)) {
-				produtos.remove(p);
+				p.setQuantidade(p.getQuantidade() - quantidade);	
 				saveProdutos();
 				break;
 			}
-		}
-		
+		 }
 	}
 	
-	 public List<Produto> getProdutos() {
-	        return produtos;
+	public void retirarProdutoEstoque(JTextField textFieldRemover) throws IOException {//Retirada de produtos em estoque
+		 String idProduto = textFieldRemover.getText().trim();
+		    Produto produtoRemover = getProdutoPorId(idProduto);
+		    if (produtoRemover != null) {
+		        produtos.remove(produtoRemover);
+		        saveProdutos();
+		    }
+		}
+
+	public String compraProduto(JTextField textFieldColocarId, JTextField textFieldQuantidadeProduto) throws IOException {
+	    String produtoId = textFieldColocarId.getText().trim();
+	    int produtoQuant = Integer.parseInt(textFieldQuantidadeProduto.getText().trim());
+	    Produto produto = null;
+
+	    // Encontra o produto correspondente ao ID fornecido
+	    for (Produto p : produtos) {
+	        if (p.getId().equals(produtoId)) {
+	            produto = p;
+	            break;
+	        }
 	    }
 
-	public String compraProduto(JTextField textFieldColocarId) throws IOException {
+	    // Verifica se o produto foi encontrado
+	    if (produto == null) {
+	        return "Produto não encontrado.";
+	    }
 
-		String produtoId = textFieldColocarId.getText();
-		Produto produto = null;
-		for (Produto p : produtos) {
-			if (p.getId().equals(produtoId)) {
-				produto = p;
-				break;
-			}
-		}
+	    // Verifica se a quantidade desejada está disponível no estoque
+	    if (produto.getQuantidade() < produtoQuant) {
+	        return "Quantidade solicitada excede o estoque disponível.";
+	    }
 
-		if (produto != null) {
-			Titulo titulo = new Titulo(UUID.randomUUID().toString(), produto.getPreco(), false, produtoId);
-			titulos.add(titulo);
-			saveTitulos();
-			return "Produto comprado. Título gerado: " + titulo.getId();
-		} else {
-			return "Produto não encontrado.";
-		}
+	    // Verifica se existe um título em aberto para este produto
+	    for (Titulo title : titulos) {
+	        if (!title.isPago() && title.getProdutoId().equals(produto.getId())) {
+	            // Atualiza a quantidade no título existente
+	            title.setQuantidade(title.getQuantidade() + produtoQuant);
+	            produto.setQuantidade(produto.getQuantidade() - produtoQuant);
+	            saveTitulos();
+	            return "Produto comprado. Quantidade adicionada ao Título em aberto existente.";
+	        }
+	    }
+
+	    // Se não houver um título em aberto, cria um novo título
+	    Titulo novoTitulo = new Titulo(UUID.randomUUID().toString(), produto.getNome(), produto.getPreco(), false, produtoQuant, produto.getId());
+	    titulos.add(novoTitulo);
+	    produto.setQuantidade(produto.getQuantidade() - produtoQuant);
+	    saveTitulos();
+
+	    return "Produto comprado. Novo Título gerado: " + novoTitulo.getId();
 	}
 
 	public void fazPagamento() throws IOException {
@@ -75,26 +124,88 @@ public class Estoque {
 		    saveTitulos();
 	}
 
-	public void listarTitulosEmAberto() {
-		System.out.println("Títulos em Aberto:");
-		for (Titulo title : titulos) {
-			if (!title.isPago()) {
-				System.out.println(title.getId().toString() + " - R$ " + title.getQuantidade());
-			}
-		}
+	public boolean aindaTemProduto(JTextField textFieldQuantidadeProduto, JTextField textFieldColocarId) {
+	    String quantidadeText = textFieldQuantidadeProduto.getText().trim();
+	    String produtoId = textFieldColocarId.getText().trim();
+	    
+	    if (quantidadeText.isEmpty() || produtoId.isEmpty()) {
+	        return false; // Retorna false se algum campo estiver vazio
+	    }
+
+	    int aindaTem;
+	    try {
+	        aindaTem = Integer.parseInt(quantidadeText);
+	    } catch (NumberFormatException e) {
+	        return false; // Retorna false se a conversão falhar
+	    }
+
+	    for (Produto p : produtos) {
+	        if (produtoId.equalsIgnoreCase(p.getId()) && p.getQuantidade() >= aindaTem) {
+	            return true;
+	        }
+	    }
+	    return false;
+	}
+
+	
+	public String removerProdutoEmAberto(JTextField textFieldColocarId, JTextField textFieldQuantidadeProduto) throws IOException {
+	    String produtoId = textFieldColocarId.getText().trim();
+	    int quantidadeParaRemover = Integer.parseInt(textFieldQuantidadeProduto.getText().trim());
+
+	    // Itera sobre os títulos para encontrar o título em aberto correspondente ao produto
+	    for (Titulo title : titulos) {
+	        if (!title.isPago() && title.getProdutoId().equals(produtoId)) {
+	            if (title.getQuantidade() > quantidadeParaRemover) {
+	                // Reduz a quantidade no título existente
+	                title.setQuantidade(title.getQuantidade() - quantidadeParaRemover);
+	            } else if (title.getQuantidade() == quantidadeParaRemover) {
+	                // Remove o título se a quantidade for exatamente a mesma
+	                titulos.remove(title);
+	            } else {
+	                return "Quantidade a remover excede a quantidade no título.";
+	            }
+
+	            // Atualiza a quantidade do produto no estoque
+	            for (Produto p : produtos) {
+	                if (p.getId().equals(produtoId)) {
+	                    p.setQuantidade(p.getQuantidade() + quantidadeParaRemover);
+	                    break;
+	                }
+	            }
+
+	            // Salva o estado atualizado dos títulos
+	            saveTitulos();
+	            return "Produto removido com sucesso.";
+	        }
+	    }
+
+	    // Caso nenhum título em aberto correspondente seja encontrado
+	    return "Título em aberto para o produto não encontrado.";
 	}
 	
-	public void removerProdutoEmAberto(JTextField textFieldColocarId) throws IOException {// Remover titulos em aberto
-		String idTitulo;
-		idTitulo = textFieldColocarId.getText();
-		for (Titulo title : titulos) {
-			if(title.getProdutoId().equals(idTitulo)) {
-				titulos.remove(title);
-				saveTitulos();
-				break;
-			}
-		}
-	}
+	 public void limparCarrinho() throws IOException {
+	        // Itera sobre os títulos em aberto usando um iterador
+	        Iterator<Titulo> iterator = titulos.iterator();
+	        while (iterator.hasNext()) {
+	            Titulo title = iterator.next();
+	            if (!title.isPago()) {
+	                // Devolve a quantidade do produto ao estoque
+	                for (Produto p : produtos) {
+	                    if (p.getId().equals(title.getProdutoId())) {
+	                        p.setQuantidade(p.getQuantidade() + title.getQuantidade());
+	                        break;
+	                    }
+	                }
+	                // Remove o título em aberto
+	                iterator.remove();
+	            }
+	        }
+
+	        // Salva o estado atualizado dos títulos e produtos
+	        saveTitulos();
+	        saveProdutos();
+	    }
+
 	public List<Object[]> getTitulosEmAbertoComDetalhes() {
         List<Object[]> titulosComDetalhes = new ArrayList<>();
         for (Titulo titulo : titulos) {
@@ -103,8 +214,9 @@ public class Estoque {
                 if (produto != null) {
                     titulosComDetalhes.add(new Object[]{
                         titulo.getId(),
-                        produto.getNome(),
-                        produto.getPreco(),
+                        titulo.getProdutoId(),
+                        titulo.getNome(),
+                        titulo.getPreco(),
                         titulo.getQuantidade()
                     });
                 }
@@ -139,7 +251,7 @@ public class Estoque {
         double total = 0;
         for (Titulo titulo : titulos) {
             if (!titulo.isPago()) {
-                total += titulo.getQuantidade();
+                total = total + titulo.getPreco() * titulo.getQuantidade();
             }
         }
         return total;

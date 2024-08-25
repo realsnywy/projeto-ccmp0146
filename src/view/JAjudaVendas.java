@@ -79,7 +79,7 @@ public class JAjudaVendas extends JFrame {
 
         JButton btnAjuda = new JButton("VIDEOS");
         btnAjuda.setFont(new Font("Tahoma", Font.BOLD, 15));
-        btnAjuda.setBounds(324, 394, 160, 59);
+        btnAjuda.setBounds(324, 394, 160, 25);
         panel.add(btnAjuda);
 
         JButton btnVoltar = new JButton("VOLTAR");
@@ -138,6 +138,20 @@ public class JAjudaVendas extends JFrame {
         txtrParaMaisInformaes.setText("Para mais informações contate o SAC ou \r\nclique no botão \"VIDEOS\" ao lado para ser\r\nredirecionado para videos informativos.");
         txtrParaMaisInformaes.setBounds(10, 394, 306, 59);
         panel.add(txtrParaMaisInformaes);
+        
+        JButton btnChat = new JButton("CHAT");
+        btnChat.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		try {
+                    Desktop.getDesktop().browse(new URI("https://discord.gg/kBMt6KShp7\r\n"));
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+        	}
+        });
+        btnChat.setFont(new Font("Tahoma", Font.BOLD, 15));
+        btnChat.setBounds(324, 428, 160, 25);
+        panel.add(btnChat);
 
         // Adicionar TreeSelectionListener para detectar seleção de nós
         tree.addTreeSelectionListener(new TreeSelectionListener() {

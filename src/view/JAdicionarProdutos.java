@@ -86,7 +86,7 @@ public class JAdicionarProdutos extends JFrame {
 		
 		JLabel lblNewLabel_3 = new JLabel("QUANTIDADE DO PRODUTO :");
 		lblNewLabel_3.setFont(new Font("Verdana", Font.BOLD, 12));
-		lblNewLabel_3.setBounds(112, 203, 125, 13);
+		lblNewLabel_3.setBounds(74, 203, 200, 13);
 		panel.add(lblNewLabel_3);
 		
 		JButton adicionarProduto = new JButton("ADICIONAR");

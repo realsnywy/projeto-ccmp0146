@@ -36,6 +36,7 @@ public class JRemoverProdutos extends JFrame {
 	private JTextField textFieldRemover;
 	private JTable table;
 	private Estoque estoque;
+	private JTextField textFieldQuantidade;
 
 	/**
 	 * Launch the application.
@@ -80,18 +81,18 @@ public class JRemoverProdutos extends JFrame {
 		
 		textFieldRemover = new JTextField();
 		textFieldRemover.setColumns(10);
-		textFieldRemover.setBounds(21, 207, 277, 27);
+		textFieldRemover.setBounds(21, 145, 277, 27);
 		panel.add(textFieldRemover);
 		
 		JLabel lblNewLabel_1 = new JLabel("REMOVER PRODUTO");
 		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel_1.setFont(new Font("Times New Roman", Font.BOLD, 14));
-		lblNewLabel_1.setBounds(70, 119, 164, 19);
+		lblNewLabel_1.setBounds(78, 87, 164, 19);
 		panel.add(lblNewLabel_1);
 		
 		JLabel lblNewLabel_2 = new JLabel("ID DO PRODUTO :");
 		lblNewLabel_2.setFont(new Font("Verdana", Font.BOLD, 12));
-		lblNewLabel_2.setBounds(21, 178, 142, 19);
+		lblNewLabel_2.setBounds(21, 116, 142, 19);
 		panel.add(lblNewLabel_2);
 		
 		JButton btnRemover = new JButton("REMOVER");
@@ -99,16 +100,20 @@ public class JRemoverProdutos extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				try {
 			        String idProduto = textFieldRemover.getText().trim();
+			        String quantidadeProduto = textFieldQuantidade.getText().trim();
+			        int quantidade = Integer.parseInt(quantidadeProduto);
 			        boolean produtoRemovido = false;
 			        
+			        if (quantidade > 0) {
 			        // Verifica se o campo de texto não está vazio
-			        if (!idProduto.isEmpty()) {
+			        if (!idProduto.isEmpty() && !quantidadeProduto.isEmpty()) {
 			            // Itera sobre os produtos
 			            for (Produto p : estoque.getProdutos()) {
 			                if (p.getId().equals(idProduto)) {
-			                    estoque.removerProdutoEstoque(textFieldRemover);  // Remove o produto
+			                    estoque.removerProdutoEstoque(textFieldRemover, textFieldQuantidade);  // Remove o produto
 			                    carregarProdutosNaTabela();  // Atualiza a tabela
-			                    textFieldRemover.setText("");  // Limpa o campo de texto
+			                    textFieldRemover.setText("");
+			                    textFieldQuantidade.setText("");// Limpa o campo de texto
 			                    JOptionPane.showMessageDialog(btnRemover, "Produto Removido Com Sucesso", "AVISO", JOptionPane.INFORMATION_MESSAGE);
 			                    produtoRemovido = true;
 			                    break;  // Sai do loop após encontrar e remover o produto
@@ -120,8 +125,11 @@ public class JRemoverProdutos extends JFrame {
 			                JOptionPane.showMessageDialog(btnRemover, "ERRO: O ID do produto é inválido", "AVISO", JOptionPane.WARNING_MESSAGE);
 			            }
 			        } else {
-			            JOptionPane.showMessageDialog(btnRemover, "ERRO: Por favor, insira um ID", "AVISO", JOptionPane.WARNING_MESSAGE);
+			            JOptionPane.showMessageDialog(btnRemover, "ERRO: Por favor, insira um ID e Quantidade a ser removida", "AVISO", JOptionPane.WARNING_MESSAGE);
 			        }
+			       }else {
+			    	   JOptionPane.showMessageDialog(btnRemover, "ERRO: Não Há produto a ser removido", "AVISO", JOptionPane.WARNING_MESSAGE);  
+			       }
 			    } catch (IOException e1) {
 			        e1.printStackTrace();
 			    }
@@ -210,6 +218,16 @@ public class JRemoverProdutos extends JFrame {
 		btnRetirarDoEstque.setBackground(new Color(68, 204, 215));
 		btnRetirarDoEstque.setBounds(44, 325, 216, 35);
 		panel.add(btnRetirarDoEstque);
+		
+		JLabel lblNewLabel_2_2 = new JLabel("QUANTIDADE A SER REMOVIDA:");
+		lblNewLabel_2_2.setFont(new Font("Verdana", Font.BOLD, 12));
+		lblNewLabel_2_2.setBounds(21, 184, 239, 19);
+		panel.add(lblNewLabel_2_2);
+		
+		textFieldQuantidade = new JTextField();
+		textFieldQuantidade.setColumns(10);
+		textFieldQuantidade.setBounds(21, 209, 277, 27);
+		panel.add(textFieldQuantidade);
 		 // Carrega os produtos na tabela ao iniciar o frame
         carregarProdutosNaTabela();
     }

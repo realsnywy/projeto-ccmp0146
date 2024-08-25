@@ -44,6 +44,7 @@ public class JPaginaVendas extends JFrame {
 	private DefaultTableModel modelTotal;
 	private Usuario usuarioLogado;
 	private UsuarioDAO usuarioDAO;
+	private JTextField textFieldQuantidadeProduto;
 
 	/**
 	 * Launch the application.
@@ -132,11 +133,19 @@ public class JPaginaVendas extends JFrame {
 		btnRemoverProdutos.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					estoque.removerProdutoEmAberto(textFieldColocarId);
-					JOptionPane.showMessageDialog(btnRemoverProdutos, "Produto Removido", "SUCESSO", JOptionPane.INFORMATION_MESSAGE);
+					if(!textFieldColocarId.getText().isEmpty() && !textFieldQuantidadeProduto.getText().isEmpty()) {
+					String mensagem = estoque.removerProdutoEmAberto(textFieldColocarId, textFieldQuantidadeProduto);
+					JOptionPane.showMessageDialog(btnRemoverProdutos, mensagem, "AVISO", JOptionPane.INFORMATION_MESSAGE);
         			textFieldColocarId.setText("");
+        			textFieldQuantidadeProduto.setText("");
         			carregarTitulosEmAbertoNaTabela();
-        			 atualizarTotalEmAberto();
+        			atualizarTotalEmAberto();
+        			carregarProdutosNaTabela();
+					}else {
+						JOptionPane.showMessageDialog(btnRemoverProdutos,"Informações não colocadas corretamente", "Erro", JOptionPane.ERROR_MESSAGE);
+						textFieldColocarId.setText("");
+        	            textFieldQuantidadeProduto.setText("");
+					}
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -144,7 +153,7 @@ public class JPaginaVendas extends JFrame {
 			}
 		});
 		btnRemoverProdutos.setFont(new Font("Tahoma", Font.BOLD, 10));
-		btnRemoverProdutos.setBounds(24, 165, 163, 31);
+		btnRemoverProdutos.setBounds(24, 178, 163, 31);
 		panel.add(btnRemoverProdutos);
 		
 		JButton btnNewButton_1_1 = new JButton("SAIR");
@@ -169,14 +178,14 @@ public class JPaginaVendas extends JFrame {
 				new Object[][] {
 				},
 				new String[] {
-					"NOME", "PRE\u00C7O $", "ID"
+					"NOME", "PRE\u00C7O $", "ID", "QUANTIDADE"
 				}
 			));
 		scrollPane.setViewportView(table);
 		carregarProdutosNaTabela();
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(490, 228, 336, 462);
+		scrollPane_1.setBounds(490, 228, 365, 462);
 		panel.add(scrollPane_1);
 		
 		table_1 = new JTable();
@@ -184,14 +193,14 @@ public class JPaginaVendas extends JFrame {
         	new Object[][] {
         	},
         	new String[] {
-        		"ID T\u00CDTULO", "NOME", "PRE\u00C7O"
+        		"ID T\u00CDTULO","ID", "NOME", "PRE\u00C7O", "QUANTIDADE"
         	}
         ));
         scrollPane_1.setViewportView(table_1);
         carregarTitulosEmAbertoNaTabela();
         
         textFieldColocarId = new JTextField();
-        textFieldColocarId.setBounds(24, 124, 336, 31);
+        textFieldColocarId.setBounds(24, 84, 336, 31);
         panel.add(textFieldColocarId);
         textFieldColocarId.setColumns(10);
         
@@ -204,40 +213,60 @@ public class JPaginaVendas extends JFrame {
         JLabel lblColoqueAId = new JLabel("COLOQUE A ID DO PRODUTO:");
         lblColoqueAId.setHorizontalAlignment(SwingConstants.CENTER);
         lblColoqueAId.setFont(new Font("Times New Roman", Font.BOLD, 15));
-        lblColoqueAId.setBounds(64, 102, 248, 25);
+        lblColoqueAId.setBounds(68, 62, 248, 25);
         panel.add(lblColoqueAId);
         
-        JButton btnAdicionarCarrinho = new JButton("ADICIONAR CARRINHO");
+        JButton btnAdicionarCarrinho = new JButton("ADICIONAR CARRINHO");//adiciona intens ao carrinho
         btnAdicionarCarrinho.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		String mensagem = null;
         		try {
-        			mensagem = estoque.compraProduto(textFieldColocarId);
-        			JOptionPane.showMessageDialog(btnAdicionarCarrinho, mensagem);
-        			textFieldColocarId.setText("");
-        			carregarTitulosEmAbertoNaTabela();
-        			atualizarTotalEmAberto();
-				} catch (IOException e1) {
-					JOptionPane.showMessageDialog(btnAdicionarCarrinho, "Erro ao adicionar ao carrinho: " + mensagem, "Erro", JOptionPane.ERROR_MESSAGE);
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+        	        // Verifica se os campos não estão vazios
+        	        if (textFieldColocarId.getText().isEmpty() || textFieldQuantidadeProduto.getText().isEmpty()) {
+        	            JOptionPane.showMessageDialog(btnAdicionarCarrinho, "Por favor, preencha todos os campos.", "Erro", JOptionPane.ERROR_MESSAGE);
+        	            return;
+        	        }
+
+        	        // Verifica se há estoque suficiente
+        	        boolean aindaTem = estoque.aindaTemProduto(textFieldQuantidadeProduto, textFieldColocarId);
+
+        	        if (aindaTem) {
+        	            mensagem = estoque.compraProduto(textFieldColocarId, textFieldQuantidadeProduto);
+        	            JOptionPane.showMessageDialog(btnAdicionarCarrinho, mensagem);
+
+        	            // Limpa os campos de texto após a compra
+        	            textFieldColocarId.setText("");
+        	            textFieldQuantidadeProduto.setText("");
+
+        	            // Atualiza a tabela e o total dos títulos em aberto
+        	            carregarTitulosEmAbertoNaTabela();
+        	            atualizarTotalEmAberto();
+        	            carregarProdutosNaTabela();
+        	        } else {
+        	            JOptionPane.showMessageDialog(btnAdicionarCarrinho, "Quantidade em falta no estoque ou informações incorretas.", "Erro", JOptionPane.ERROR_MESSAGE);
+        	            textFieldColocarId.setText("");
+        	            textFieldQuantidadeProduto.setText("");
+        	        }
+        	    } catch (IOException e1) {
+        	        JOptionPane.showMessageDialog(btnAdicionarCarrinho, "Erro ao adicionar ao carrinho: " + e1.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        	        e1.printStackTrace();
+        	    }
         	}
         });
         btnAdicionarCarrinho.setFont(new Font("Tahoma", Font.BOLD, 10));
-        btnAdicionarCarrinho.setBounds(197, 165, 163, 31);
+        btnAdicionarCarrinho.setBounds(197, 178, 163, 31);
         panel.add(btnAdicionarCarrinho);
         
         JLabel lblCarrinho = new JLabel("CARRINHO");
         lblCarrinho.setHorizontalAlignment(SwingConstants.CENTER);
         lblCarrinho.setFont(new Font("Times New Roman", Font.BOLD, 15));
-        lblCarrinho.setBounds(548, 115, 220, 25);
+        lblCarrinho.setBounds(558, 115, 220, 25);
         panel.add(lblCarrinho);
         
         JLabel lblTitulosEmAberto = new JLabel("TITULOS EM ABERTO");
         lblTitulosEmAberto.setHorizontalAlignment(SwingConstants.CENTER);
         lblTitulosEmAberto.setFont(new Font("Times New Roman", Font.BOLD, 15));
-        lblTitulosEmAberto.setBounds(548, 202, 220, 25);
+        lblTitulosEmAberto.setBounds(558, 202, 220, 25);
         panel.add(lblTitulosEmAberto);
         
         JButton btnPagar = new JButton("PAGAR");
@@ -258,8 +287,37 @@ public class JPaginaVendas extends JFrame {
         	}
         });
         btnPagar.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        btnPagar.setBounds(720, 150, 104, 46);
+        btnPagar.setBounds(751, 150, 104, 46);
         panel.add(btnPagar);
+        
+        JLabel lblColoqueAQuantidade = new JLabel("COLOQUE A QUANTIDADE DO PRODUTO:");
+        lblColoqueAQuantidade.setHorizontalAlignment(SwingConstants.CENTER);
+        lblColoqueAQuantidade.setFont(new Font("Times New Roman", Font.BOLD, 15));
+        lblColoqueAQuantidade.setBounds(24, 115, 336, 25);
+        panel.add(lblColoqueAQuantidade);
+        
+        textFieldQuantidadeProduto = new JTextField();
+        textFieldQuantidadeProduto.setColumns(10);
+        textFieldQuantidadeProduto.setBounds(24, 137, 336, 31);
+        panel.add(textFieldQuantidadeProduto);
+        
+        JButton btnLimpar = new JButton("LIMPAR");
+        btnLimpar.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		try {
+					estoque.limparCarrinho();
+					carregarTitulosEmAbertoNaTabela();
+		            atualizarTotalEmAberto();
+		            carregarProdutosNaTabela();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+        	}
+        });
+        btnLimpar.setFont(new Font("Tahoma", Font.PLAIN, 15));
+        btnLimpar.setBounds(623, 150, 118, 46);
+        panel.add(btnLimpar);
         
         
         
@@ -278,7 +336,7 @@ public class JPaginaVendas extends JFrame {
 
 	        List<Produto> produtos = estoque.getProdutos();
 	        for (Produto produto : produtos) {
-	            model.addRow(new Object[]{produto.getNome(), produto.getPreco(), produto.getId()});
+	            model.addRow(new Object[]{produto.getNome(), produto.getPreco(), produto.getId(), produto.getQuantidade()});
 	        }
 	    }
 	 

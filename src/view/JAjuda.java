@@ -136,7 +136,7 @@ public class JAjuda extends JFrame {
         btnChat.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
                 try {
-                    Desktop.getDesktop().browse(new URI("https://discord.gg/kBMt6KShp7\r\n"));
+                    Desktop.getDesktop().browse(new URI("https://discord.com/invite/kBMt6KShp7"));
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -214,7 +214,7 @@ public class JAjuda extends JFrame {
         btnAjuda.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-                    Desktop.getDesktop().browse(new URI("https://www.youtube.com"));
+                    Desktop.getDesktop().browse(new URI("https://www.youtube.com/watch?v=V4ldeu4oXUE"));
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }

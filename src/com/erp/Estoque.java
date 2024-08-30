@@ -21,10 +21,12 @@ public class Estoque {
         return produtos;
     }
 
-	public void addProduto(JTextField textFieldNomeDoProduto, JTextField textFieldPrecoProduto, JTextField textFieldQuantidadeProduto) throws IOException {
+	public void addProduto(JTextField textFieldNomeDoProduto, JTextField textFieldPrecoProduto, JTextField textFieldQuantidadeProduto, JTextField textFieldPeso) throws IOException {
 	    String nome = textFieldNomeDoProduto.getText();
-	    double preco = Double.parseDouble(textFieldPrecoProduto.getText());
-	    int quantidade = Integer.parseInt(textFieldQuantidadeProduto.getText());
+	    double preco = Double.parseDouble(textFieldPrecoProduto.getText().trim());
+	    int quantidade = Integer.parseInt(textFieldQuantidadeProduto.getText().trim());
+	    float peso = Float.parseFloat(textFieldPeso.getText().trim());
+	    float pesoTotal = peso * quantidade;
 	    
 	    Produto produtoExistente = null;
 	    for (Produto p : produtos) {
@@ -37,11 +39,12 @@ public class Estoque {
 	    if (produtoExistente != null) {
 	        // Produto já existe, incrementa a quantidade
 	        produtoExistente.setQuantidade(produtoExistente.getQuantidade() + quantidade);
+	        produtoExistente.setPesoTotal(produtoExistente.getPeso() * produtoExistente.getQuantidade());
 	    } else {
 	        // Produto não existe, cria um novo
 	        int tamanho1 = produtos.size() + 1;
 	        String id = String.valueOf(tamanho1);
-	        Produto novoProduto = new Produto(id, nome, preco, quantidade);
+	        Produto novoProduto = new Produto(id, nome, preco, quantidade, peso, pesoTotal);
 	        produtos.add(novoProduto);
 	    }
 	    
@@ -55,7 +58,8 @@ public class Estoque {
 		
 		for (Produto p : produtos) {
 			if (p.getId().equals(idProduto)) {
-				p.setQuantidade(p.getQuantidade() - quantidade);	
+				p.setQuantidade(p.getQuantidade() - quantidade);
+				p.setPesoTotal(p.getPeso() * p.getQuantidade());
 				saveProdutos();
 				break;
 			}

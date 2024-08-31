@@ -5,7 +5,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
+
 import javax.swing.JTree;
 import javax.swing.JTextArea;
 import javax.swing.event.TreeSelectionEvent;
@@ -16,17 +16,27 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+
 import java.awt.Font;
 import java.awt.Desktop;
 import java.net.URI;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class JAjuda extends JFrame {
 
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
     private JTextArea textArea;
+    private Timer timerInatividade;
+    private int tempoInatividadeSegundos = 30;
 
     /**
      * Launch the application.
@@ -57,6 +67,11 @@ public class JAjuda extends JFrame {
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
         contentPane.setLayout(null);
+        
+     // Adiciona Listeners de atividade
+        addMouseMotionListener(new AtividadeListener());
+        addKeyListener(new AtividadeListener());
+        iniciarTimerInatividade();
 
         JPanel panel = new JPanel();
         panel.setLayout(null);
@@ -214,11 +229,53 @@ public class JAjuda extends JFrame {
         btnAjuda.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-                    Desktop.getDesktop().browse(new URI("https://www.youtube.com"));
+                    Desktop.getDesktop().browse(new URI("www.youtube.com/watch?v=aV_YB42Ae1M"));
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             }
+        });
+    }
+ // Inicia o timer para detectar a inatividade
+    private void iniciarTimerInatividade() {
+        timerInatividade = new Timer();
+        timerInatividade.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                entrarModoSuspensao();
+            }
+        }, tempoInatividadeSegundos * 1000); // Converte segundos para milissegundos
+    }
+
+    // Reinicia o timer de inatividade sempre que o usuário estiver ativo
+    private void reiniciarTimerInatividade() {
+        timerInatividade.cancel();
+        iniciarTimerInatividade();
+    }
+
+    // Classe interna para detectar atividade
+    private class AtividadeListener extends MouseAdapter implements KeyListener {
+        @Override
+        public void mouseMoved(MouseEvent e) {
+            reiniciarTimerInatividade();
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+            reiniciarTimerInatividade();
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {}
+
+        @Override
+        public void keyTyped(KeyEvent e) {}
+    }
+    private void entrarModoSuspensao() {
+        SwingUtilities.invokeLater(() -> {
+            // Exibe a tela de modo suspenso
+            JModoSuspenso modoSuspenso = new JModoSuspenso(this); // Passa a referência da janela principal
+            modoSuspenso.entrarModoSuspensao();
         });
     }
 }

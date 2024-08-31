@@ -10,7 +10,6 @@ import javax.swing.table.DefaultTableModel;
 import com.erp.Estoque;
 import com.erp.Main;
 import com.erp.Produto;
-import com.erp.Titulo;
 import com.erp.Usuario;
 import com.erp.UsuarioDAO;
 
@@ -21,13 +20,19 @@ import javax.swing.JOptionPane;
 
 import java.awt.Font;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JPasswordField;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.awt.event.ActionEvent;
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
@@ -43,8 +48,9 @@ public class JPaginaVendas extends JFrame {
 	private JTable tableTotal;
 	private DefaultTableModel modelTotal;
 	private Usuario usuarioLogado;
-	private UsuarioDAO usuarioDAO;
 	private JTextField textFieldQuantidadeProduto;
+	private Timer timerInatividade;
+	private int tempoInatividadeSegundos = 30;
 
 	/**
 	 * Launch the application.
@@ -69,7 +75,7 @@ public class JPaginaVendas extends JFrame {
     
 	public JPaginaVendas() throws IOException {
 		
-        this.usuarioDAO = new UsuarioDAO();
+        new UsuarioDAO();
         this.estoque = new Estoque();
         initialize();
 		estoque = new Estoque();
@@ -81,9 +87,13 @@ public class JPaginaVendas extends JFrame {
 		setBounds(100, 100, 900, 780);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
+		
+		 // Adiciona Listeners de atividade
+        addMouseMotionListener(new AtividadeListener());
+        addKeyListener(new AtividadeListener());
+        iniciarTimerInatividade();
 		
 		JPanel panel = new JPanel();
 		panel.setLayout(null);
@@ -372,5 +382,47 @@ public class JPaginaVendas extends JFrame {
 		 if (usuarioLogado != null) {
 			 usuarioLogado.setVendas(usuarioLogado.getVendas() + totalVendas);
 	        }
+	    }
+	// Inicia o timer para detectar a inatividade
+	    private void iniciarTimerInatividade() {
+	        timerInatividade = new Timer();
+	        timerInatividade.schedule(new TimerTask() {
+	            @Override
+	            public void run() {
+	                entrarModoSuspensao();
+	            }
+	        }, tempoInatividadeSegundos * 1000); // Converte segundos para milissegundos
+	    }
+
+	    // Reinicia o timer de inatividade sempre que o usuário estiver ativo
+	    private void reiniciarTimerInatividade() {
+	        timerInatividade.cancel();
+	        iniciarTimerInatividade();
+	    }
+
+	    // Classe interna para detectar atividade
+	    private class AtividadeListener extends MouseAdapter implements KeyListener {
+	        @Override
+	        public void mouseMoved(MouseEvent e) {
+	            reiniciarTimerInatividade();
+	        }
+
+	        @Override
+	        public void keyPressed(KeyEvent e) {
+	            reiniciarTimerInatividade();
+	        }
+
+	        @Override
+	        public void keyReleased(KeyEvent e) {}
+
+	        @Override
+	        public void keyTyped(KeyEvent e) {}
+	    }
+	    private void entrarModoSuspensao() {
+	        SwingUtilities.invokeLater(() -> {
+	            // Exibe a tela de modo suspenso
+	            JModoSuspenso modoSuspenso = new JModoSuspenso(this); // Passa a referência da janela principal
+	            modoSuspenso.entrarModoSuspensao();
+	        });
 	    }
 }

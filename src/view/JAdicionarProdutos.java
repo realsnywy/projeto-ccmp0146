@@ -16,11 +16,18 @@ import javax.swing.JOptionPane;
 
 import java.awt.Font;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.awt.event.ActionEvent;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -37,6 +44,8 @@ public class JAdicionarProdutos extends JFrame {
 	private JTable table;
 	private Estoque estoque;
 	private float totalEstoque = 1000;//quantidade do espaço do estoque
+	private Timer timerInatividade;
+	private int tempoInatividadeSegundos = 30;
 
 	/**
 	 * Launch the application.
@@ -72,9 +81,13 @@ public class JAdicionarProdutos extends JFrame {
 		setBounds(100, 100, 890, 520);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
+		
+		// Adiciona Listeners de atividade
+        addMouseMotionListener(new AtividadeListener());
+        addKeyListener(new AtividadeListener());
+        iniciarTimerInatividade();
 		
 		JPanel panel = new JPanel();
 		panel.setLayout(null);
@@ -227,7 +240,6 @@ public class JAdicionarProdutos extends JFrame {
         	float pesoSuportadoNoEstoque = totalEstoque/produto.getPeso();
             float nivelDoEstoque = (produto.getPesoTotal() * 100)/pesoSuportadoNoEstoque;
             
-            String id = String.valueOf(produto.getId());
                 model.addRow(new Object[]{
                 produto.getNome(), 
                 produto.getPreco(), 
@@ -265,6 +277,47 @@ public class JAdicionarProdutos extends JFrame {
         
         return null;
     }
-
     
+ // Inicia o timer para detectar a inatividade
+    private void iniciarTimerInatividade() {
+        timerInatividade = new Timer();
+        timerInatividade.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                entrarModoSuspensao();
+            }
+        }, tempoInatividadeSegundos * 1000); // Converte segundos para milissegundos
+    }
+
+    // Reinicia o timer de inatividade sempre que o usuário estiver ativo
+    private void reiniciarTimerInatividade() {
+        timerInatividade.cancel();
+        iniciarTimerInatividade();
+    }
+
+    // Classe interna para detectar atividade
+    private class AtividadeListener extends MouseAdapter implements KeyListener {
+        @Override
+        public void mouseMoved(MouseEvent e) {
+            reiniciarTimerInatividade();
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+            reiniciarTimerInatividade();
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {}
+
+        @Override
+        public void keyTyped(KeyEvent e) {}
+    }
+    private void entrarModoSuspensao() {
+        SwingUtilities.invokeLater(() -> {
+            // Exibe a tela de modo suspenso
+            JModoSuspenso modoSuspenso = new JModoSuspenso(this); // Passa a referência da janela principal
+            modoSuspenso.entrarModoSuspensao();
+        });
+    }
 }

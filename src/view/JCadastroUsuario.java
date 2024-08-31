@@ -8,7 +8,6 @@ import com.erp.Criptografia;
 import com.erp.Usuario;
 import com.erp.UsuarioDAO;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -19,9 +18,16 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.JComboBox;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.awt.Color;
 import java.awt.Font;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 public class JCadastroUsuario extends JFrame {
 
@@ -32,6 +38,8 @@ public class JCadastroUsuario extends JFrame {
     private UsuarioDAO usuarioDAO = new UsuarioDAO();
     private JTextField textFieldSenha;
     private JComboBox<String> comboBoxSetor;
+    private Timer timerInatividade;
+    private int tempoInatividadeSegundos = 30;
     
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
@@ -54,6 +62,11 @@ public class JCadastroUsuario extends JFrame {
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
         contentPane.setLayout(null);
+        
+     // Adiciona Listeners de atividade
+        addMouseMotionListener(new AtividadeListener());
+        addKeyListener(new AtividadeListener());
+        iniciarTimerInatividade();
 
         JPanel panel = new JPanel();
         panel.setBackground(new Color(64, 128, 128));
@@ -233,5 +246,47 @@ public class JCadastroUsuario extends JFrame {
         for (Usuario usuario : usuarioDAO.getUsuarios()) {
             model.addRow(new Object[]{usuario.getNomeColaborador(), usuario.getNome(), usuario.getSetor(), usuario.getVendas()});
         }
+    }
+ // Inicia o timer para detectar a inatividade
+    private void iniciarTimerInatividade() {
+        timerInatividade = new Timer();
+        timerInatividade.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                entrarModoSuspensao();
+            }
+        }, tempoInatividadeSegundos * 1000); // Converte segundos para milissegundos
+    }
+
+    // Reinicia o timer de inatividade sempre que o usuário estiver ativo
+    private void reiniciarTimerInatividade() {
+        timerInatividade.cancel();
+        iniciarTimerInatividade();
+    }
+
+    // Classe interna para detectar atividade
+    private class AtividadeListener extends MouseAdapter implements KeyListener {
+        @Override
+        public void mouseMoved(MouseEvent e) {
+            reiniciarTimerInatividade();
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+            reiniciarTimerInatividade();
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {}
+
+        @Override
+        public void keyTyped(KeyEvent e) {}
+    }
+    private void entrarModoSuspensao() {
+        SwingUtilities.invokeLater(() -> {
+            // Exibe a tela de modo suspenso
+            JModoSuspenso modoSuspenso = new JModoSuspenso(this); // Passa a referência da janela principal
+            modoSuspenso.entrarModoSuspensao();
+        });
     }
 }

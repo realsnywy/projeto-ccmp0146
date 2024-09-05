@@ -20,19 +20,12 @@ import javax.swing.JOptionPane;
 
 import java.awt.Font;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.awt.event.ActionEvent;
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
@@ -49,8 +42,6 @@ public class JPaginaVendas extends JFrame {
 	private DefaultTableModel modelTotal;
 	private Usuario usuarioLogado;
 	private JTextField textFieldQuantidadeProduto;
-	private Timer timerInatividade;
-	private int tempoInatividadeSegundos = 30;
 
 	/**
 	 * Launch the application.
@@ -90,10 +81,8 @@ public class JPaginaVendas extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		 // Adiciona Listeners de atividade
-        addMouseMotionListener(new AtividadeListener());
-        addKeyListener(new AtividadeListener());
-        iniciarTimerInatividade();
+		//passando o frame para o modo suspensão para verificar atividade
+        JModoSuspenso.addActivityListener(this);
 		
 		JPanel panel = new JPanel();
 		panel.setLayout(null);
@@ -382,47 +371,5 @@ public class JPaginaVendas extends JFrame {
 		 if (usuarioLogado != null) {
 			 usuarioLogado.setVendas(usuarioLogado.getVendas() + totalVendas);
 	        }
-	    }
-	// Inicia o timer para detectar a inatividade
-	    private void iniciarTimerInatividade() {
-	        timerInatividade = new Timer();
-	        timerInatividade.schedule(new TimerTask() {
-	            @Override
-	            public void run() {
-	                entrarModoSuspensao();
-	            }
-	        }, tempoInatividadeSegundos * 1000); // Converte segundos para milissegundos
-	    }
-
-	    // Reinicia o timer de inatividade sempre que o usuário estiver ativo
-	    private void reiniciarTimerInatividade() {
-	        timerInatividade.cancel();
-	        iniciarTimerInatividade();
-	    }
-
-	    // Classe interna para detectar atividade
-	    private class AtividadeListener extends MouseAdapter implements KeyListener {
-	        @Override
-	        public void mouseMoved(MouseEvent e) {
-	            reiniciarTimerInatividade();
-	        }
-
-	        @Override
-	        public void keyPressed(KeyEvent e) {
-	            reiniciarTimerInatividade();
-	        }
-
-	        @Override
-	        public void keyReleased(KeyEvent e) {}
-
-	        @Override
-	        public void keyTyped(KeyEvent e) {}
-	    }
-	    private void entrarModoSuspensao() {
-	        SwingUtilities.invokeLater(() -> {
-	            // Exibe a tela de modo suspenso
-	            JModoSuspenso modoSuspenso = new JModoSuspenso(this); // Passa a referência da janela principal
-	            modoSuspenso.entrarModoSuspensao();
-	        });
 	    }
 }

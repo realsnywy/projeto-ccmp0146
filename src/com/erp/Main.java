@@ -5,10 +5,6 @@ import java.awt.Font;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -17,8 +13,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Properties;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -27,7 +21,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
 import view.JLoginE;
@@ -42,8 +35,6 @@ public class Main extends JFrame {
     private static final String CONFIG_FILE = "config.properties";
     private static final String TIMESTAMP_KEY = "timestamp";
     private static final long AVISO_INTERVALO = 1000 * 60 * 60 * 24;
-    private Timer timerInatividade;
-    private int tempoInatividadeSegundos = 30;
     
 
     /**
@@ -94,10 +85,8 @@ public class Main extends JFrame {
         setContentPane(contentPane);
         contentPane.setLayout(null);
         
-     // Adiciona Listeners de atividade
-        addMouseMotionListener(new AtividadeListener());
-        addKeyListener(new AtividadeListener());
-        iniciarTimerInatividade();
+        //passando o frame para o modo suspensão para verificar atividade
+      	JModoSuspenso.addActivityListener(this);
 
         JPanel panel = new JPanel();
         panel.setBackground(new Color(64, 128, 128));
@@ -230,48 +219,6 @@ public class Main extends JFrame {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
- // Inicia o timer para detectar a inatividade
-    private void iniciarTimerInatividade() {
-        timerInatividade = new Timer();
-        timerInatividade.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                entrarModoSuspensao();
-            }
-        }, tempoInatividadeSegundos * 1000); // Converte segundos para milissegundos
-    }
-
-    // Reinicia o timer de inatividade sempre que o usuário estiver ativo
-    private void reiniciarTimerInatividade() {
-        timerInatividade.cancel();
-        iniciarTimerInatividade();
-    }
-
-    // Classe interna para detectar atividade
-    private class AtividadeListener extends MouseAdapter implements KeyListener {
-        @Override
-        public void mouseMoved(MouseEvent e) {
-            reiniciarTimerInatividade();
-        }
-
-        @Override
-        public void keyPressed(KeyEvent e) {
-            reiniciarTimerInatividade();
-        }
-
-        @Override
-        public void keyReleased(KeyEvent e) {}
-
-        @Override
-        public void keyTyped(KeyEvent e) {}
-    }
-    private void entrarModoSuspensao() {
-        SwingUtilities.invokeLater(() -> {
-            // Exibe a tela de modo suspenso
-            JModoSuspenso modoSuspenso = new JModoSuspenso(this); // Passa a referência da janela principal
-            modoSuspenso.entrarModoSuspensao();
-        });
     }
 }
 

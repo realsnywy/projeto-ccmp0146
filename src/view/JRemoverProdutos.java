@@ -7,7 +7,8 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import com.erp.Estoque;
-import com.erp.Produto;
+
+import model.Produto;
 
 import java.awt.Color;
 import javax.swing.JTextField;

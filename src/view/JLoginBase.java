@@ -6,10 +6,12 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import com.erp.Criptografia;
 import com.erp.Main;
-import com.erp.Usuario;
 import com.erp.UsuarioDAO;
+import com.erp.UsuarioDAO.UsuarioLogadoReceiver;
+
+import model.Criptografia;
+import model.Usuario;
 
 public abstract class JLoginBase extends JFrame {
 
@@ -20,14 +22,14 @@ public abstract class JLoginBase extends JFrame {
     private String setor;
     private Class<?> telaPrincipal;
 
-    public JLoginBase(String setor, Class<?> telaPrincipal) {
+    public JLoginBase(String setor, Class<?> telaPrincipal) {//pega o nome do setor e a classe dele para configurar a tela 
         this.setor = setor;
         this.telaPrincipal = telaPrincipal;
         initialize();
     }
 
     private void initialize() {
-        ImageIcon logo = new ImageIcon(getClass().getClassLoader().getResource("logo.png"));
+        ImageIcon logo = new ImageIcon(getClass().getClassLoader().getResource("logo.png"));//coloca o logo no icone da pagina e nome dela
         setIconImage(logo.getImage());
         setTitle("StoSale");
 
@@ -85,7 +87,10 @@ public abstract class JLoginBase extends JFrame {
                         JOptionPane.showMessageDialog(btnEntrar, "Login bem-sucedido");
                         dispose();
                         try {
-                            JFrame tela = (JFrame) telaPrincipal.getDeclaredConstructor().newInstance();
+                            JFrame tela = (JFrame) telaPrincipal.getDeclaredConstructor().newInstance();//instanciando o novo frame com base na telaprincipal passada
+                            if (tela instanceof UsuarioLogadoReceiver) {
+                                ((UsuarioLogadoReceiver) tela).setUsuarioLogado(usuario);//if para passar o usuario logado
+                            }
                             tela.setLocationRelativeTo(tela);
                             tela.setVisible(true);
                         } catch (Exception ex) {

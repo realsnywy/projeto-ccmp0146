@@ -4,6 +4,9 @@ import java.io.*;
 import java.util.*;
 import javax.swing.JTextField;
 
+import model.Produto;
+import model.Titulo;
+
 public class Estoque {
 	public List<Produto> produtos;
 	private List<Titulo> titulos;

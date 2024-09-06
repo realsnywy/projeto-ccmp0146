@@ -9,9 +9,11 @@ import javax.swing.table.DefaultTableModel;
 
 import com.erp.Estoque;
 import com.erp.Main;
-import com.erp.Produto;
-import com.erp.Usuario;
 import com.erp.UsuarioDAO;
+import com.erp.UsuarioDAO.UsuarioLogadoReceiver;
+
+import model.Produto;
+import model.Usuario;
 
 import java.awt.Color;
 import javax.swing.JTextField;
@@ -20,17 +22,20 @@ import javax.swing.JOptionPane;
 
 import java.awt.Font;
 import javax.swing.SwingConstants;
+import javax.swing.Timer;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.awt.event.ActionEvent;
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
 
-public class JPaginaVendas extends JFrame {
+public class JPaginaVendas extends JFrame implements UsuarioLogadoReceiver {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -42,6 +47,7 @@ public class JPaginaVendas extends JFrame {
 	private DefaultTableModel modelTotal;
 	private Usuario usuarioLogado;
 	private JTextField textFieldQuantidadeProduto;
+	private JTable tabelaData;
 
 	/**
 	 * Launch the application.
@@ -317,9 +323,28 @@ public class JPaginaVendas extends JFrame {
         btnLimpar.setBounds(623, 150, 118, 46);
         panel.add(btnLimpar);
         
+        JScrollPane scrollPane_Data = new JScrollPane();
+        scrollPane_Data.setBounds(768, 7, 90, 41);
+        panel.add(scrollPane_Data);
         
+        String[] colunas = {"DATA"};
+        DefaultTableModel modelo = new DefaultTableModel(colunas, 0);
+        modelo.addRow(new Object[]{""});
+        tabelaData = new JTable(modelo);
+        scrollPane_Data.setViewportView(tabelaData);
+     // Timer para atualizar a data e hora a cada segundo (1000 milissegundos)
+        Timer timer = new Timer(1000, e -> {
+            // Obter a data
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            String dataAtual = sdf.format(new Date());
+
+            // Atualizar o valor da célula na tabela
+            modelo.setValueAt(dataAtual, 0, 0);
+        });
+        timer.start();//timer para atualiaz a data a cada 1 seg
+	 }
+    
         
-    }
 	public void setUsuarioLogado(Usuario usuario) {
         this.usuarioLogado = usuario;
     }

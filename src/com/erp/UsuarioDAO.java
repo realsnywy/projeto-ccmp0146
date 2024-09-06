@@ -3,6 +3,9 @@ package com.erp;
 import java.io.*;
 import java.util.*;
 
+import model.Criptografia;
+import model.Usuario;
+
 public class UsuarioDAO {
     private Map<String, Usuario> usuarios = new HashMap<>();
     private static final String ARQUIVO_USUARIOS = "usuarios.txt";
@@ -92,6 +95,10 @@ public class UsuarioDAO {
             usuario.setVendas(vendas);
             salvarUsuarios();
         }
+    }
+    
+    public interface UsuarioLogadoReceiver {
+        void setUsuarioLogado(Usuario usuario);
     }
 
 }

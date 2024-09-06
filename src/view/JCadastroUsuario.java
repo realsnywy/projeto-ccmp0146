@@ -4,9 +4,11 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import com.erp.Criptografia;
-import com.erp.Usuario;
+
 import com.erp.UsuarioDAO;
+
+import model.Criptografia;
+import model.Usuario;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -18,9 +20,15 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.JComboBox;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 import javax.swing.SwingConstants;
+import javax.swing.Timer;
 
 public class JCadastroUsuario extends JFrame {
 
@@ -31,6 +39,7 @@ public class JCadastroUsuario extends JFrame {
     private UsuarioDAO usuarioDAO = new UsuarioDAO();
     private JTextField textFieldSenha;
     private JComboBox<String> comboBoxSetor;
+    private JTable tabelaData;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
@@ -38,6 +47,7 @@ public class JCadastroUsuario extends JFrame {
                 try {
                     JCadastroUsuario frame = new JCadastroUsuario();
                     frame.setVisible(true);
+                    frame.setLocationRelativeTo(null);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -56,6 +66,14 @@ public class JCadastroUsuario extends JFrame {
         
       //passando o frame para o modo suspensão para verificar atividade
         JModoSuspenso.addActivityListener(this);
+        
+     // Adicionar um ComponentListener para ajustar o layout ao redimensionar
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                ajustarComponentes();
+            }
+        });
 
         JPanel panel = new JPanel();
         panel.setBackground(new Color(64, 128, 128));
@@ -161,6 +179,26 @@ public class JCadastroUsuario extends JFrame {
         lblSetor.setFont(new Font("Times New Roman", Font.BOLD, 15));
         lblSetor.setBounds(495, 99, 190, 25);
         panel.add(lblSetor);
+        
+        JScrollPane scrollPane_1 = new JScrollPane();
+        scrollPane_1.setBounds(768, 7, 90, 41);
+        panel.add(scrollPane_1);
+        
+        String[] colunas = {"DATA"};
+        DefaultTableModel modelo = new DefaultTableModel(colunas, 0);
+        modelo.addRow(new Object[]{""});
+        tabelaData = new JTable(modelo);
+        scrollPane_1.setViewportView(tabelaData);
+     // Timer para atualizar a data e hora a cada segundo (1000 milissegundos)
+        Timer timer = new Timer(1000, e -> {
+            // Obter a data
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            String dataAtual = sdf.format(new Date());
+
+            // Atualizar o valor da célula na tabela
+            modelo.setValueAt(dataAtual, 0, 0);
+        });
+        timer.start();//timer para atualiaz a data a cada 1 seg
     }
 
     private String gerarNomeUsuarioUnico(String nomeColaborador) {
@@ -234,6 +272,19 @@ public class JCadastroUsuario extends JFrame {
         model.setRowCount(0);
         for (Usuario usuario : usuarioDAO.getUsuarios()) {
             model.addRow(new Object[]{usuario.getNomeColaborador(), usuario.getNome(), usuario.getSetor(), usuario.getVendas()});
+        }
+    }
+    
+ // Método para ajustar os componentes ao redimensionar
+    private void ajustarComponentes() {
+        // Obter o tamanho atual do JFrame
+        int larguraFrame = getWidth();
+        int alturaFrame = getHeight();
+        contentPane.setBounds(0, 0, larguraFrame, alturaFrame);
+        for (Component c : contentPane.getComponents()) {
+            if (c instanceof JPanel) {
+                c.setBounds(10, 0, larguraFrame - 30, alturaFrame - 50);
+            }
         }
     }
 }

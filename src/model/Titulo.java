@@ -1,4 +1,4 @@
-package com.erp;
+package model;
 
 public class Titulo {
 	private String id;

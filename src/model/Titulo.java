@@ -1,22 +1,22 @@
 package model;
+import java.util.List;
+
+
+/* Entender a palavra Título como uma venda ou uma compra, a compra ainda vai ser implementada, por enquanto apenas temos a venda. */
 
 public class Titulo {
 	private String id;
-	private String nome;
 	private double preco;
 	private boolean paga;
-	private int quantidade;
-	private String produtoId;
+	//A venda agora vai ter uma lista de produtos em vez de ser um produto e uma quantidade de produtos.
+	private List<Produto> produtos;
 	
 
-	public Titulo(String id, String nome, double preco, boolean paga, int quantidade, String produtoId) {
+	public Titulo(String id, String nome, double preco, boolean paga, List<Produto> produtos) {
 		this.id = id;
-		this.nome = nome;
 		this.preco = preco;
 		this.paga = paga;
-		this.quantidade = quantidade;
-		this.produtoId = produtoId;
-		
+		this.produtos = produtos;
 	}
 
 	public String getId() {

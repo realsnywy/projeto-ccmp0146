@@ -15,6 +15,7 @@ import javax.swing.SwingConstants;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.awt.event.ActionEvent;
 
 public class JGerencia extends JFrame {
@@ -91,7 +92,13 @@ public class JGerencia extends JFrame {
 		btnListarProdutos.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();
-				JCadastroUsuario jCadastroUsuario = new JCadastroUsuario();
+				JCadastroUsuario jCadastroUsuario = null;
+				try {
+					jCadastroUsuario = new JCadastroUsuario();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				jCadastroUsuario.setLocationRelativeTo(jCadastroUsuario);
 				jCadastroUsuario.setVisible(true);
 			}
@@ -110,7 +117,21 @@ public class JGerencia extends JFrame {
 			}
 		});
 		btnAjuda.setFont(new Font("Tahoma", Font.BOLD, 15));
-		btnAjuda.setBounds(145, 236, 209, 39);
+		btnAjuda.setBounds(145, 274, 209, 39);
 		panel.add(btnAjuda);
+		
+		JButton btnRelatorios = new JButton("RELATORIOS");
+		btnRelatorios.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+				JRelatorios jRelatorios = null;
+				jRelatorios = new JRelatorios();
+				jRelatorios.setLocationRelativeTo(jRelatorios);
+				jRelatorios.setVisible(true);
+			}
+		});
+		btnRelatorios.setFont(new Font("Tahoma", Font.BOLD, 15));
+		btnRelatorios.setBounds(145, 227, 209, 39);
+		panel.add(btnRelatorios);
 	}
 }

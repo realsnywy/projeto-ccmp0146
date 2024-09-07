@@ -56,6 +56,13 @@ public class Produto {
 
 	public static Produto fromString(String str) {
 		String[] parts = str.split(",");
+		if (parts.length != 6) {
+	        throw new IllegalArgumentException("Formato inválido para produto: " + str);
+	    }
+		try {
 		return new Produto(parts[0], parts[1], Double.parseDouble(parts[2]), Integer.parseInt(parts[3]), Float.parseFloat(parts[4]), Float.parseFloat(parts[5]));
+		} catch (NumberFormatException e) {
+	        throw new IllegalArgumentException("Erro ao converter valores numéricos para produto: " + str, e);
+	    }
 	}
 }

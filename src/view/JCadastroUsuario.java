@@ -10,6 +10,7 @@ import com.erp.UsuarioDAO;
 import model.Criptografia;
 import model.Usuario;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -20,12 +21,10 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.JComboBox;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Font;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
@@ -40,7 +39,8 @@ public class JCadastroUsuario extends JFrame {
     private JTextField textFieldSenha;
     private JComboBox<String> comboBoxSetor;
     private JTable tabelaData;
-
+    
+    ImageIcon logo = new ImageIcon(getClass().getClassLoader().getResource("logo.png"));
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -55,7 +55,7 @@ public class JCadastroUsuario extends JFrame {
         });
     }
 
-    public JCadastroUsuario() {
+    public JCadastroUsuario() throws IOException {
         
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 913, 764);
@@ -64,16 +64,9 @@ public class JCadastroUsuario extends JFrame {
         setContentPane(contentPane);
         contentPane.setLayout(null);
         
+        setIconImage(logo.getImage());
       //passando o frame para o modo suspensão para verificar atividade
         JModoSuspenso.addActivityListener(this);
-        
-     // Adicionar um ComponentListener para ajustar o layout ao redimensionar
-        addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentResized(ComponentEvent e) {
-                ajustarComponentes();
-            }
-        });
 
         JPanel panel = new JPanel();
         panel.setBackground(new Color(64, 128, 128));
@@ -94,7 +87,12 @@ public class JCadastroUsuario extends JFrame {
         JButton btnAdicionarUsuario = new JButton("ADICIONAR USUÁRIO");
         btnAdicionarUsuario.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                adicionarUsuario();
+                try {
+					adicionarUsuario();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
             }
         });
         btnAdicionarUsuario.setBounds(695, 124, 163, 31);
@@ -108,7 +106,7 @@ public class JCadastroUsuario extends JFrame {
         table.setModel(new DefaultTableModel(
             new Object[][] {},
             new String[] {
-                "Nome do Colaborador", "Nome de Usuário", "Setor", "Vendas"
+                "Nome do Colaborador", "Nome de Usuário", "Setor"
             }
         ));
         scrollPane.setViewportView(table);
@@ -118,7 +116,12 @@ public class JCadastroUsuario extends JFrame {
         JButton btnRemoverUsuario = new JButton("REMOVER USUÁRIO");
         btnRemoverUsuario.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                removerUsuario();
+                try {
+					removerUsuario();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
             }
         });
         btnRemoverUsuario.setBounds(230, 624, 163, 31);
@@ -127,7 +130,12 @@ public class JCadastroUsuario extends JFrame {
         JButton btnRedefinirSenha = new JButton("REDEFINIR SENHA");
         btnRedefinirSenha.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                redefinirSenha();
+                try {
+					redefinirSenha();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
             }
         });
         btnRedefinirSenha.setBounds(440, 624, 163, 31);
@@ -221,7 +229,7 @@ public class JCadastroUsuario extends JFrame {
         return nomeUsuario;
     }
 
-    private void adicionarUsuario() {
+    private void adicionarUsuario() throws IOException {
         String nomeColaborador = textFieldNomeDoColaborador.getText().trim();
         String senha = textFieldSenha.getText().trim();
         if (nomeColaborador.isEmpty() || senha.isEmpty()) {
@@ -230,8 +238,7 @@ public class JCadastroUsuario extends JFrame {
         }
         String nomeUsuario = gerarNomeUsuarioUnico(nomeColaborador);
         String setor = (String) comboBoxSetor.getSelectedItem();
-        double vendas = 0.0;
-        Usuario usuario = new Usuario(nomeUsuario, Criptografia.criptografar(senha), nomeColaborador, setor, vendas);
+        Usuario usuario = new Usuario(nomeUsuario, Criptografia.criptografar(senha), nomeColaborador, setor);
 
         usuarioDAO.adicionarUsuario(usuario);
         textFieldNomeDoColaborador.setText("");
@@ -239,7 +246,7 @@ public class JCadastroUsuario extends JFrame {
         atualizarTabela();
     }
 
-    private void removerUsuario() {
+    private void removerUsuario() throws IOException {
         int linhaSelecionada = table.getSelectedRow();
         if (linhaSelecionada != -1) {
             String nomeUsuario = (String) table.getValueAt(linhaSelecionada, 1);
@@ -250,7 +257,7 @@ public class JCadastroUsuario extends JFrame {
         }
     }
 
-    private void redefinirSenha() {
+    private void redefinirSenha() throws IOException {
         int linhaSelecionada = table.getSelectedRow();
         if (linhaSelecionada != -1) {
             String nomeUsuario = (String) table.getValueAt(linhaSelecionada, 1);
@@ -267,24 +274,12 @@ public class JCadastroUsuario extends JFrame {
         }
     }
 
-    private void atualizarTabela() {
+    private void atualizarTabela() throws IOException {
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
         for (Usuario usuario : usuarioDAO.getUsuarios()) {
-            model.addRow(new Object[]{usuario.getNomeColaborador(), usuario.getNome(), usuario.getSetor(), usuario.getVendas()});
+            model.addRow(new Object[]{usuario.getNomeColaborador(), usuario.getNome(), usuario.getSetor()});
         }
     }
-    
- // Método para ajustar os componentes ao redimensionar
-    private void ajustarComponentes() {
-        // Obter o tamanho atual do JFrame
-        int larguraFrame = getWidth();
-        int alturaFrame = getHeight();
-        contentPane.setBounds(0, 0, larguraFrame, alturaFrame);
-        for (Component c : contentPane.getComponents()) {
-            if (c instanceof JPanel) {
-                c.setBounds(10, 0, larguraFrame - 30, alturaFrame - 50);
-            }
-        }
-    }
+
 }

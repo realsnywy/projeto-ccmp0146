@@ -1,29 +1,40 @@
 package com.erp;
 
 import java.io.*;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.swing.JTextField;
 
+import model.NotaFiscal;
 import model.Produto;
 import model.Titulo;
 
 public class Estoque {
-	public List<Produto> produtos;
+	private List<Produto> produtos;
 	private List<Titulo> titulos;
+	private List<NotaFiscal> notasFiscais;
 	public static final String PRODUTOS_ARQUIVO = "produtos.txt";
 	private static final String TITULOS_ARQUIVO = "titulos.txt";
+	private static final String NOTASFISCAIS_ARQUIVO = "notasfiscais.txt";
 
 	public Estoque() throws IOException {
 		produtos = new ArrayList<>();
 		titulos = new ArrayList<>();
+		notasFiscais = new ArrayList<>();
 		carregaProduto();
+		carregaNotasFiscais();
 		carregaTitulos();
 	}
+	
+	public List<NotaFiscal> getNotaFiscal() {
+        return notasFiscais;
+    }
 	
 	public List<Produto> getProdutos() {
         return produtos;
     }
-
+	
+	//adiciona produtos ao estoque
 	public void addProduto(JTextField textFieldNomeDoProduto, JTextField textFieldPrecoProduto, JTextField textFieldQuantidadeProduto, JTextField textFieldPeso) throws IOException {
 	    String nome = textFieldNomeDoProduto.getText();
 	    double preco = Double.parseDouble(textFieldPrecoProduto.getText().trim());
@@ -54,7 +65,7 @@ public class Estoque {
 	    saveProdutos();
 	}
 	
-	public void removerProdutoEstoque(JTextField textFieldRemover, JTextField textFieldQuantidade) throws IOException {//Remoção individual de produtos em estoque
+	public void removerProdutoEstoque(JTextField textFieldRemover, JTextField textFieldQuantidade) throws IOException {//Remoção de certa quantidade de produtos em estoque
 
         String idProduto = textFieldRemover.getText().trim();
         int quantidade = Integer.parseInt(textFieldQuantidade.getText().trim());
@@ -69,7 +80,7 @@ public class Estoque {
 		 }
 	}
 	
-	public void retirarProdutoEstoque(JTextField textFieldRemover) throws IOException {//Retirada de produtos em estoque
+	public void retirarProdutoEstoque(JTextField textFieldRemover) throws IOException {//Remove os produtos em estoque de vez
 		 String idProduto = textFieldRemover.getText().trim();
 		    Produto produtoRemover = getProdutoPorId(idProduto);
 		    if (produtoRemover != null) {
@@ -77,7 +88,8 @@ public class Estoque {
 		        saveProdutos();
 		    }
 		}
-
+	
+	//adiciona um produto ao carrinho
 	public String compraProduto(JTextField textFieldColocarId, JTextField textFieldQuantidadeProduto) throws IOException {
 	    String produtoId = textFieldColocarId.getText().trim();
 	    int produtoQuant = Integer.parseInt(textFieldQuantidadeProduto.getText().trim());
@@ -101,36 +113,71 @@ public class Estoque {
 	        return "Quantidade solicitada excede o estoque disponível.";
 	    }
 
-	    // Verifica se existe um título em aberto para este produto
-	    for (Titulo title : titulos) {
-	        if (!title.isPago() && title.getProdutoId().equals(produto.getId())) {
-	            // Atualiza a quantidade no título existente
-	            title.setQuantidade(title.getQuantidade() + produtoQuant);
-	            produto.setQuantidade(produto.getQuantidade() - produtoQuant);
-	            saveTitulos();
-	            return "Produto comprado. Quantidade adicionada ao Título em aberto existente.";
+	    // Verifica se existe um título em aberto
+	    for (Titulo titulo : titulos) {
+	        if (!titulo.isPago()) {
+	            // Obtém a lista de produtos do carrinho do título atual
+	            List<Produto> produtosCarrinho = titulo.getProdutosCarrinho();
+
+	            for (Produto produtoCarrinho : produtosCarrinho) {
+	                // Verifica se o ID do produto no carrinho é o mesmo que o ID do produto fornecido
+	                if (produtoCarrinho.getId().equals(produto.getId())) {
+	                    // Atualiza a quantidade no produto existente no carrinho
+	                    produtoCarrinho.setQuantidade(produtoCarrinho.getQuantidade() + produtoQuant);
+	                    produto.setQuantidade(produto.getQuantidade() - produtoQuant);
+	                    
+	                    // Salva as mudanças no estoque e nos títulos
+	                    saveProdutos();
+	                    saveTitulos();
+
+	                    return "Produto adicionado ao carrinho. Quantidade adicionada ao produto em aberto existente.";
+	                }
+	            }
+
+	            // Se o produto não for encontrado, adiciona como um novo produto no carrinho  
+	                Produto novoProduto = new Produto(produto.getId(), produto.getNome(), produto.getPreco(), produtoQuant, produto.getPeso(), produto.getPesoTotal());
+	                produtosCarrinho.add(novoProduto);
+	                produto.setQuantidade(produto.getQuantidade() - produtoQuant);
+	                
+	                // Salva as mudanças no estoque e nos títulos
+	                saveProdutos();
+	                saveTitulos();
+
+	                return "Produto adicionado ao carrinho como um novo item.";
+	            
 	        }
 	    }
 
 	    // Se não houver um título em aberto, cria um novo título
-	    Titulo novoTitulo = new Titulo(UUID.randomUUID().toString(), produto.getNome(), produto.getPreco(), false, produtoQuant, produto.getId());
+	    List<Produto> novoProdutosCarrinho = new ArrayList<>();
+	    Produto novoProduto = new Produto(produto.getId(), produto.getNome(), produto.getPreco(), produtoQuant, produto.getPeso(), produto.getPesoTotal());
+	    novoProdutosCarrinho.add(novoProduto);
+	    Titulo novoTitulo = new Titulo(UUID.randomUUID().toString(), produto.getPreco(), false, novoProdutosCarrinho);
 	    titulos.add(novoTitulo);
+
 	    produto.setQuantidade(produto.getQuantidade() - produtoQuant);
+	    saveProdutos();
 	    saveTitulos();
 
-	    return "Produto comprado. Novo Título gerado: " + novoTitulo.getId();
+	    return "Produto Adicionado ao carrinho. Novo Título gerado: " + novoTitulo.getId();
 	}
 
-	public void fazPagamento() throws IOException {
+	public void fazPagamento(String nomeVendedor, String nomeCliente) throws IOException {
 
 		 for (Titulo t : titulos) {
 		        if (!t.isPago()) { 
+		        	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		            String dataDaCompra = sdf.format(new Date());
+		        	NotaFiscal notaFiscal = new NotaFiscal(t.getId(), nomeVendedor, nomeCliente, t.getPreco(), dataDaCompra, t.produtosCarrinho);
+		        	notasFiscais.add(notaFiscal);
+		        	saveNotasFiscais();
 		            t.setPaga(true);
 		        }
 		    }
 		    saveTitulos();
 	}
-
+	
+	//verifica se a quantidade de produtos no estoque é suficiente para adicionar ao carrinho
 	public boolean aindaTemProduto(JTextField textFieldQuantidadeProduto, JTextField textFieldColocarId) {
 	    String quantidadeText = textFieldQuantidadeProduto.getText().trim();
 	    String produtoId = textFieldColocarId.getText().trim();
@@ -154,83 +201,115 @@ public class Estoque {
 	    return false;
 	}
 
-	
+	//remove produtos em especifico do carrinho
 	public String removerProdutoEmAberto(JTextField textFieldColocarId, JTextField textFieldQuantidadeProduto) throws IOException {
-	    String produtoId = textFieldColocarId.getText().trim();
-	    int quantidadeParaRemover = Integer.parseInt(textFieldQuantidadeProduto.getText().trim());
+		String produtoId = textFieldColocarId.getText().trim();
+	    int quantidadeParaRemover;
+
+	    // Verifica se a quantidade é válida
+	    try {
+	        quantidadeParaRemover = Integer.parseInt(textFieldQuantidadeProduto.getText().trim());
+	    } catch (NumberFormatException e) {
+	        return "Quantidade inválida.";
+	    }
 
 	    // Itera sobre os títulos para encontrar o título em aberto correspondente ao produto
 	    for (Titulo title : titulos) {
-	        if (!title.isPago() && title.getProdutoId().equals(produtoId)) {
-	            if (title.getQuantidade() > quantidadeParaRemover) {
-	                // Reduz a quantidade no título existente
-	                title.setQuantidade(title.getQuantidade() - quantidadeParaRemover);
-	            } else if (title.getQuantidade() == quantidadeParaRemover) {
-	                // Remove o título se a quantidade for exatamente a mesma
-	                titulos.remove(title);
-	            } else {
-	                return "Quantidade a remover excede a quantidade no título.";
-	            }
+	        if (!title.isPago()) {
+	            List<Produto> produtosCarrinho = new ArrayList<>(title.getProdutosCarrinho());
 
-	            // Atualiza a quantidade do produto no estoque
-	            for (Produto p : produtos) {
-	                if (p.getId().equals(produtoId)) {
-	                    p.setQuantidade(p.getQuantidade() + quantidadeParaRemover);
-	                    break;
+	            for (Produto produtoCarrinho : produtosCarrinho) {
+	                if (produtoCarrinho.getId().equals(produtoId)) {
+	                    if (produtoCarrinho.getQuantidade() > quantidadeParaRemover) {
+	                        // Reduz a quantidade no título existente
+	                        produtoCarrinho.setQuantidade(produtoCarrinho.getQuantidade() - quantidadeParaRemover);
+	                        saveTitulos();  // Salva o estado atualizado dos títulos
+	                     // Atualiza a quantidade do produto no estoque
+	                        for (Produto p : produtos) {
+	                            if (p.getId().equals(produtoId)) {
+	                                p.setQuantidade(p.getQuantidade() + quantidadeParaRemover);
+	                                saveProdutos();
+	                                break;
+	                            }
+	                        }
+	                        break;  // Encerra o loop, já que o produto foi encontrado e atualizado
+	                    } else if (produtoCarrinho.getQuantidade() == quantidadeParaRemover) {
+	                        // Remove o produto do título
+	                        title.getProdutosCarrinho().remove(produtoCarrinho);
+	                        saveTitulos();  // Salva o estado atualizado dos títulos
+
+	                        // Se o título ficar vazio após a remoção, remove o título
+	                        if (title.getProdutosCarrinho().isEmpty()) {
+	                            titulos.remove(title);
+	                            saveTitulos();
+	                        }
+	                        // Atualiza a quantidade do produto no estoque
+	                        for (Produto p : produtos) {
+	                            if (p.getId().equals(produtoId)) {
+	                                p.setQuantidade(p.getQuantidade() + quantidadeParaRemover);
+	                                saveProdutos();
+	                                break;
+	                            }
+	                        }
+	                        return "Produto removido com sucesso.";
+	                    } else {
+	                        return "Quantidade a remover excede a quantidade no título.";
+	                    }
 	                }
 	            }
-
-	            // Salva o estado atualizado dos títulos
-	            saveTitulos();
-	            return "Produto removido com sucesso.";
 	        }
 	    }
-
 	    // Caso nenhum título em aberto correspondente seja encontrado
 	    return "Título em aberto para o produto não encontrado.";
 	}
 	
-	 public void limparCarrinho() throws IOException {
-	        // Itera sobre os títulos em aberto usando um iterador
-	        Iterator<Titulo> iterator = titulos.iterator();
-	        while (iterator.hasNext()) {
-	            Titulo title = iterator.next();
-	            if (!title.isPago()) {
-	                // Devolve a quantidade do produto ao estoque
+	public void limparCarrinho() throws IOException {
+	    Iterator<Titulo> iterator = titulos.iterator();
+	    
+	    while (iterator.hasNext()) {
+	        Titulo titulo = iterator.next();
+	        if (!titulo.isPago()) {
+	            // Devolve a quantidade do produto ao estoque
+	            List<Produto> produtosCarrinho = titulo.getProdutosCarrinho();
+
+	            for (Produto produtoCarrinho : produtosCarrinho) {
 	                for (Produto p : produtos) {
-	                    if (p.getId().equals(title.getProdutoId())) {
-	                        p.setQuantidade(p.getQuantidade() + title.getQuantidade());
+	                    if (p.getId().equals(produtoCarrinho.getId())) {
+	                        p.setQuantidade(p.getQuantidade() + produtoCarrinho.getQuantidade());
 	                        break;
 	                    }
 	                }
-	                // Remove o título em aberto
-	                iterator.remove();
 	            }
+	            // Remove o título da lista de forma segura
+	            iterator.remove();
 	        }
-
-	        // Salva o estado atualizado dos títulos e produtos
-	        saveTitulos();
-	        saveProdutos();
 	    }
 
-	public List<Object[]> getTitulosEmAbertoComDetalhes() {
-        List<Object[]> titulosComDetalhes = new ArrayList<>();
-        for (Titulo titulo : titulos) {
-            if (!titulo.isPago()) {
-                Produto produto = getProdutoPorId(titulo.getProdutoId());
-                if (produto != null) {
-                    titulosComDetalhes.add(new Object[]{
-                        titulo.getId(),
-                        titulo.getProdutoId(),
-                        titulo.getNome(),
-                        titulo.getPreco(),
-                        titulo.getQuantidade()
-                    });
-                }
-            }
-        }
-        return titulosComDetalhes;
-    }
+	    // Salva o estado atualizado dos títulos e produtos
+	    saveTitulos();
+	    saveProdutos();
+	}
+
+
+	 public List<Object[]> getTitulosEmAbertoComDetalhes() { //cria um modelo de tabela para atualizar o titulo em aberto
+		    List<Object[]> titulosComDetalhes = new ArrayList<>();
+
+		    for (Titulo titulo : titulos) {
+		        if (!titulo.isPago()) {
+		            List<Produto> produtosCarrinho = titulo.getProdutosCarrinho();
+		            for (Produto produtoCarrinho : produtosCarrinho) {
+		                        titulosComDetalhes.add(new Object[]{
+		                            produtoCarrinho.getId(),
+		                            produtoCarrinho.getNome(),
+		                            produtoCarrinho.getPreco(),
+		                            produtoCarrinho.getQuantidade()
+		                        });
+		            }
+		        }
+		    }
+
+		    return titulosComDetalhes;
+		}
 
     private Produto getProdutoPorId(String produtoId) {
         for (Produto produto : produtos) {
@@ -240,8 +319,22 @@ public class Estoque {
         }
         return null;
     }
+    
+    public double calcularTotalTitulosEmAberto() {//carrega o total do titulo e manda para pagina de vendas
+        double total = 0;
+        for (Titulo titulo : titulos) {
+            if (!titulo.isPago()) {
+            	List<Produto> produtosCarrinho = titulo.getProdutosCarrinho();
+                for (Produto produtoCarrinho : produtosCarrinho) {
+                total = total + produtoCarrinho.getPreco() * produtoCarrinho.getQuantidade();
+                }
+                titulo.setPreco(total);
+            }
+        }
+        return total;
+    }
 
-    private void carregaProduto() throws IOException {
+    private void carregaProduto() throws IOException {//carrega os produtos na lista quando a classe estoque é instanciada
 		File file = new File(PRODUTOS_ARQUIVO);
 		if (file.exists()) {
 			try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
@@ -254,17 +347,31 @@ public class Estoque {
 		}
 	}
     
-    public double calcularTotalTitulosEmAberto() {
-        double total = 0;
-        for (Titulo titulo : titulos) {
-            if (!titulo.isPago()) {
-                total = total + titulo.getPreco() * titulo.getQuantidade();
+    private void carregaNotasFiscais() throws IOException {
+        File file = new File(NOTASFISCAIS_ARQUIVO);
+        if (file.exists()) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    try {
+                        NotaFiscal notaFiscal = NotaFiscal.fromString(line);
+                        notasFiscais.add(notaFiscal);
+                    } catch (IllegalArgumentException e) {
+                        // Log a mensagem de erro e continue com a próxima linha
+                        System.err.println("Erro ao processar linha do arquivo: " + line + " - " + e.getMessage());
+                    }
+                }
+            } catch (IOException e) {
+                // Exibe uma mensagem de erro se ocorrer um problema ao ler o arquivo
+                System.err.println("Erro ao ler o arquivo de notas fiscais: " + e.getMessage());
+                throw e;
             }
+        } else {
+            System.out.println("Arquivo de notas fiscais não encontrado: " + NOTASFISCAIS_ARQUIVO);
         }
-        return total;
     }
-
-	private void carregaTitulos() throws IOException {
+    
+	private void carregaTitulos() throws IOException {//carrega os titulos na lista quando a classe estoque é instanciada
 		File file = new File(TITULOS_ARQUIVO);
 		if (file.exists()) {
 			try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
@@ -281,7 +388,7 @@ public class Estoque {
 		}
 	}
 
-	private void saveProdutos() throws IOException {
+	private void saveProdutos() throws IOException {//salva os dados no txt
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(PRODUTOS_ARQUIVO))) {
 			for (Produto product : produtos) {
 				writer.write(product.toString());
@@ -289,8 +396,17 @@ public class Estoque {
 			}
 		}
 	}
+	
+	private void saveNotasFiscais() throws IOException {//salva os dados no txt
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(NOTASFISCAIS_ARQUIVO))) {
+			for (NotaFiscal nota : notasFiscais) {
+				writer.write(nota.toString());
+				writer.newLine();
+			}
+		}
+	}
 
-	private void saveTitulos() throws IOException {
+	private void saveTitulos() throws IOException {//salva os titulos no txt
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(TITULOS_ARQUIVO))) {
 			for (Titulo title : titulos) {
 				writer.write(title.toString());

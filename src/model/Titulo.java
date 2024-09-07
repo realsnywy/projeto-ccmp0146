@@ -1,30 +1,39 @@
 package model;
+import java.util.ArrayList;
+import java.util.List;
+
+
+/* Entender a palavra Título como uma venda ou uma compra, a compra ainda vai ser implementada, por enquanto apenas temos a venda. */
 
 public class Titulo {
 	private String id;
-	private String nome;
 	private double preco;
 	private boolean paga;
-	private int quantidade;
-	private String produtoId;
+	//A venda agora vai ter uma lista de produtos em vez de ser um produto e uma quantidade de produtos.
+	public List<Produto> produtosCarrinho;
 	
 
-	public Titulo(String id, String nome, double preco, boolean paga, int quantidade, String produtoId) {
+	public Titulo(String id, double preco, boolean paga, List<Produto> produtosCarrinho) {
 		this.id = id;
-		this.nome = nome;
 		this.preco = preco;
 		this.paga = paga;
-		this.quantidade = quantidade;
-		this.produtoId = produtoId;
-		
+		this.produtosCarrinho = produtosCarrinho;
 	}
 
 	public String getId() {
 		return id;
 	}
+	
+	public void setId(String id) {
+		this.id = id;
+	}
 
 	public double getPreco() {
 		return preco;
+	}
+	
+	public void setPreco(double preco) {
+		this.preco = preco;
 	}
 
 	public boolean isPago() {
@@ -34,35 +43,40 @@ public class Titulo {
 	public void setPaga(boolean paga) {
 		this.paga = paga;
 	}
-	public String getNome() {
-        return nome;
+	public List<Produto> getProdutosCarrinho() {
+        return produtosCarrinho;
     }
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
-	public int getQuantidade() {
-        return quantidade;
-    }
-	public void setQuantidade(int quantidade) {
-		this.quantidade = quantidade;
-	}
-	public String getProdutoId() {
-        return produtoId;
-    }
-	public void setProdutoId(String produtoId) {
-		this.produtoId = produtoId;
+	public void setProdutosCarrinho(List<Produto> produtosCarrinho) {
+		this.produtosCarrinho = produtosCarrinho;
 	}
 
 	@Override
 	public String toString() {
-		return id + "," + nome + "," + preco + "," + paga + "," + quantidade + "," + produtoId;
-	}
+        // Convertendo a lista de produtos para uma string separada por ponto e vírgula
+        StringBuilder produtosStr = new StringBuilder();
+        for (Produto produto : produtosCarrinho) {
+            produtosStr.append(produto.toString()).append(";");
+        }
+        
+        // Removendo o último ponto e vírgula
+        if (produtosStr.length() > 0) {
+            produtosStr.deleteCharAt(produtosStr.length() - 1);
+        }
 
+        return id + "," + preco + "," + paga + "," + produtosStr;
+    }
 	public static Titulo fromString(String str) {
-		String[] parts = str.split(",");
-		if (parts.length != 6) {
+		String[] parts = str.split(",", 4);
+		if (parts.length < 4) {
 	        throw new IllegalArgumentException("Formato de string inválido: " + str);
 	    }
-		return new Titulo(parts[0], parts[1], Double.parseDouble(parts[2]), Boolean.parseBoolean(parts[3]), Integer.parseInt(parts[4]), parts[5]);
+		// Processando a lista de produtos
+        List<Produto> produtosCarrinho = new ArrayList<>();
+        String[] produtosArray = parts[3].split(";");
+        for (String produtoStr : produtosArray) {
+            Produto produto = Produto.fromString(produtoStr); // Conversão de string para Produto
+            produtosCarrinho.add(produto);
+        }
+		return new Titulo(parts[0], Double.parseDouble(parts[1]), Boolean.parseBoolean(parts[2]), produtosCarrinho);
 	}
 }

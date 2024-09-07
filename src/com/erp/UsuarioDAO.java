@@ -47,7 +47,7 @@ public class UsuarioDAO {
     private void salvarUsuarios() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(ARQUIVO_USUARIOS))) {
             for (Usuario usuario : usuarios.values()) {
-                writer.write(usuario.getNome() + ";" + usuario.getSenha() + ";" + usuario.getNomeColaborador() + ";" + usuario.getSetor() + ";" + usuario.getVendas());
+                writer.write(usuario.getNome() + ";" + usuario.getSenha() + ";" + usuario.getNomeColaborador() + ";" + usuario.getSetor());
                 writer.newLine();
             }
         } catch (IOException e) {
@@ -65,14 +65,13 @@ public class UsuarioDAO {
             String linha;
             while ((linha = reader.readLine()) != null) {
                 String[] partes = linha.split(";");
-                if (partes.length == 5) {
+                if (partes.length == 4) {
                     String nome = partes[0];
                     String senha = partes[1];
                     String nomeColaborador = partes[2];
                     String setor = partes[3];
-                    double vendas = Double.parseDouble(partes[4]);
                     
-                    Usuario usuario = new Usuario(nome, senha, nomeColaborador, setor, vendas);
+                    Usuario usuario = new Usuario(nome, senha, nomeColaborador, setor);
                     usuarios.put(nome, usuario);
                 }
             }
@@ -87,14 +86,6 @@ public class UsuarioDAO {
             return usuario;
         }
         return null;
-    }
-    
-    public void atualizarVendas(String nome, double vendas) {
-        Usuario usuario = buscarUsuarioPorNome(nome);
-        if (usuario != null) {
-            usuario.setVendas(vendas);
-            salvarUsuarios();
-        }
     }
     
     public interface UsuarioLogadoReceiver {

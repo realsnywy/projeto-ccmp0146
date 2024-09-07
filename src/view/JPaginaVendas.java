@@ -74,7 +74,6 @@ public class JPaginaVendas extends JFrame implements UsuarioLogadoReceiver {
 		
         new UsuarioDAO();
         this.estoque = new Estoque();
-        initialize();
 		estoque = new Estoque();
 		
 		setIconImage(logo.getImage());
@@ -197,7 +196,7 @@ public class JPaginaVendas extends JFrame implements UsuarioLogadoReceiver {
         	new Object[][] {
         	},
         	new String[] {
-        		"ID T\u00CDTULO","ID", "NOME", "PRE\u00C7O", "QUANTIDADE"
+        		"ID PRODUTO", "NOME", "PRE\u00C7O", "QUANTIDADE"
         	}
         ));
         scrollPane_1.setViewportView(table_1);
@@ -267,7 +266,7 @@ public class JPaginaVendas extends JFrame implements UsuarioLogadoReceiver {
         lblCarrinho.setBounds(558, 115, 220, 25);
         panel.add(lblCarrinho);
         
-        JLabel lblTitulosEmAberto = new JLabel("TITULOS EM ABERTO");
+        JLabel lblTitulosEmAberto = new JLabel("TITULO EM ABERTO");
         lblTitulosEmAberto.setHorizontalAlignment(SwingConstants.CENTER);
         lblTitulosEmAberto.setFont(new Font("Times New Roman", Font.BOLD, 15));
         lblTitulosEmAberto.setBounds(558, 202, 220, 25);
@@ -277,18 +276,42 @@ public class JPaginaVendas extends JFrame implements UsuarioLogadoReceiver {
         btnPagar.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
 			try {
-				atualizarTotalVendas();
-				UsuarioDAO usuarioDAO = new UsuarioDAO();
-				usuarioDAO.atualizarVendas(usuarioLogado.getNome(), usuarioLogado.getVendas());
-				JOptionPane.showMessageDialog(btnPagar, "Pagamento Realizado com Sucesso");
-				estoque.fazPagamento();
-				carregarTitulosEmAbertoNaTabela();
-				atualizarTotalEmAberto();
+				int opcao = JOptionPane.showConfirmDialog(
+					    btnPagar, 
+					    "Digite o nome do Cliente:", 
+					    "Concluir Compra?", 
+					    JOptionPane.OK_CANCEL_OPTION, 
+					    JOptionPane.INFORMATION_MESSAGE
+					);
+
+					if (opcao == JOptionPane.OK_OPTION) {
+					    // O usuário clicou em OK, continue com a operação
+					    String nomeCliente = JOptionPane.showInputDialog(
+					        btnPagar, 
+					        "Digite o nome do Cliente:", 
+					        "Concluir Compra", 
+					        JOptionPane.INFORMATION_MESSAGE
+					    );
+					    
+					    // Verifica se o nome do cliente não está vazio
+					    if (nomeCliente != null && !nomeCliente.trim().isEmpty()) {
+							estoque.fazPagamento(usuarioLogado.getNome(), nomeCliente);
+							JOptionPane.showMessageDialog(btnPagar, "Pagamento Realizado com Sucesso");
+							carregarTitulosEmAbertoNaTabela();
+							atualizarTotalEmAberto();
+					    } else {
+					        JOptionPane.showMessageDialog(btnPagar, "O nome do cliente não pode ser vazio.", "Erro", JOptionPane.ERROR_MESSAGE);
+					    }
+					    
+					} else if (opcao == JOptionPane.CANCEL_OPTION) {
+					    // O usuário clicou em Cancelar, cancele a operação
+					    JOptionPane.showMessageDialog(btnPagar, "Operação cancelada.", "Cancelado", JOptionPane.WARNING_MESSAGE);
+					}
 			} catch (IOException e1) {
 				JOptionPane.showMessageDialog(btnPagar, "Erro ao processar pagamento: " + e1.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
 				e1.printStackTrace();
 			}
-        	}
+        }
         });
         btnPagar.setFont(new Font("Tahoma", Font.PLAIN, 15));
         btnPagar.setBounds(751, 150, 104, 46);
@@ -384,17 +407,6 @@ public class JPaginaVendas extends JFrame implements UsuarioLogadoReceiver {
 	        List<Object[]> titulosComDetalhes = estoque.getTitulosEmAbertoComDetalhes();
 	        for (Object[] detalhes : titulosComDetalhes) {
 	            model.addRow(detalhes);
-	        }
-	    }
-	 private void initialize() {
-	       
-	        atualizarTotalVendas();
-	    }
-	 private void atualizarTotalVendas() {
-		 
-		 double totalVendas = estoque.calcularTotalTitulosEmAberto();
-		 if (usuarioLogado != null) {
-			 usuarioLogado.setVendas(usuarioLogado.getVendas() + totalVendas);
 	        }
 	    }
 }

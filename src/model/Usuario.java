@@ -5,14 +5,14 @@ public class Usuario {
     private String senha;
     private String nomeColaborador;
     private String setor;
-    private  double vendas;
+    
 
-    public Usuario(String nome, String senha, String nomeColaborador, String setor, double vendas) {
+    public Usuario(String nome, String senha, String nomeColaborador, String setor) {
         this.nome = nome;
         this.senha = senha;
         this.nomeColaborador = nomeColaborador;
         this.setor = setor;
-        this.vendas = vendas;
+        
     }
 
     public String getNome() {
@@ -44,12 +44,5 @@ public class Usuario {
 
     public void setNomeColaborador(String nomeColaborador) {
         this.nomeColaborador = nomeColaborador;
-    }
-    public double getVendas() {
-        return vendas;
-    }
-
-    public void setVendas(double vendas) {
-        this.vendas = vendas;
     }
 }

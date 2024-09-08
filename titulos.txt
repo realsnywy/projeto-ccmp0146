@@ -1,1 +1,10 @@
 a20c5be0-8b68-47a4-9c22-f1270cedcc7f,bolo,25.0,true,5,3
+<<<<<<< Updated upstream
+=======
+6b6ed422-070c-4154-a45c-4caa8261aa27,bolo,12.0,true,1,1
+128719f1-501f-49ab-8bb1-2f50caeec305,bolo,12.0,true,2,1
+2aa386bd-2fd8-411b-b3d2-9cc6d64dac92,carro,15000.0,true,1,2
+e6930a6a-9bc0-47e9-9277-31987ca641de,Validade Teste 2,22.5,true,10,7
+41645efa-b4ab-44ab-809c-a1013f7bd6a5,Validade Teste 2,22.5,true,10,7
+a9647235-fc90-4d45-9ac1-c4fb9483aa09,bolo,13.0,true,4,1
+>>>>>>> Stashed changes

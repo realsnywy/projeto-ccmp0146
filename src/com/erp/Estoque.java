@@ -1,6 +1,7 @@
 package com.erp;
 
 import java.io.*;
+import java.time.LocalDate;
 import java.util.*;
 import javax.swing.JTextField;
 
@@ -21,12 +22,27 @@ public class Estoque {
         return produtos;
     }
 
+<<<<<<< Updated upstream
 	public void addProduto(JTextField textFieldNomeDoProduto, JTextField textFieldPrecoProduto, JTextField textFieldQuantidadeProduto) throws IOException {
+=======
+	public void addProduto(JTextField textFieldNomeDoProduto, JTextField textFieldPrecoProduto, JTextField textFieldQuantidadeProduto, JTextField textFieldPeso,
+			JTextField textFieldDia, JTextField textFieldMes, JTextField textFieldAno) throws IOException {
+>>>>>>> Stashed changes
 	    String nome = textFieldNomeDoProduto.getText();
 	    double preco = Double.parseDouble(textFieldPrecoProduto.getText());
 	    int quantidade = Integer.parseInt(textFieldQuantidadeProduto.getText());
 	    
-	    Produto produtoExistente = null;
+	    LocalDate vencimento = LocalDate.of(3000, 12, 12); //@Felipee013 Se n adicionar data == produto n perecível
+	    												   // aí a data vai pra 12/12/3000
+	    
+	    if(!textFieldDia.getText().trim().isEmpty() && !textFieldMes.getText().trim().isEmpty() && !textFieldAno.getText().trim().isEmpty()) {
+	    	int dia = Integer.parseInt(textFieldDia.getText().trim());//checa para ver se adicionou data aí transforma en int
+            int mes = Integer.parseInt(textFieldMes.getText().trim());
+            int ano = Integer.parseInt(textFieldAno.getText().trim());
+            vencimento = LocalDate.of(ano, mes, dia);
+	    }
+	     
+		Produto produtoExistente = null;
 	    for (Produto p : produtos) {
 	        if (p.getNome().equalsIgnoreCase(nome)) { // Verifica se o produto já existe pelo nome
 	            produtoExistente = p;
@@ -41,8 +57,13 @@ public class Estoque {
 	        // Produto não existe, cria um novo
 	        int tamanho1 = produtos.size() + 1;
 	        String id = String.valueOf(tamanho1);
+<<<<<<< Updated upstream
 	        Produto novoProduto = new Produto(id, nome, preco, quantidade);
 	        produtos.add(novoProduto);
+=======
+	        Produto novoProduto = new Produto(id, nome, preco, quantidade, peso, pesoTotal, vencimento);//@Feliipee013 Passando a data
+	        produtos.add(novoProduto);																	//para adicionar ao produto.txt
+>>>>>>> Stashed changes
 	    }
 	    
 	    saveProdutos();
@@ -290,5 +311,15 @@ public class Estoque {
 				writer.newLine();
 			}
 		}
+	}
+	public void mudarPreco (String idProduto ,double novoPreco) throws IOException { //@Feliipee013 muda o  preco de um produto
+
+		for (Produto p : produtos) {
+	        if (p.getId().equalsIgnoreCase(idProduto)) { //@Feliipee013
+	        	p.setNovoPreco(novoPreco);
+	        	saveProdutos();
+	            break;
+	        }
+	    }
 	}
 }

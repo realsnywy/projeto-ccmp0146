@@ -1,3 +1,8 @@
+<<<<<<< Updated upstream
 igor1;a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3;igor;Gerência;0.0
 leo1;a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3;Leo;Gerência;0.0
+=======
+igor1;a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3;igor;Estoque;0.0
+leo1;a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3;Leo;Gerência;15538.0
+>>>>>>> Stashed changes
 felip1;a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3;felipe;Vendas;0.0

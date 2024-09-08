@@ -84,18 +84,37 @@ public class JRelatorios extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				dispose();
 				JRelatoriosVendas jRelatoriosVendas = null;
-				jRelatoriosVendas = new JRelatoriosVendas();
+				try {
+					jRelatoriosVendas = new JRelatoriosVendas();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				jRelatoriosVendas.setLocationRelativeTo(jRelatoriosVendas);
 				jRelatoriosVendas.setVisible(true);
 			}
 		});
 		btnRelatorioVendas.setFont(new Font("Tahoma", Font.BOLD, 15));
-		btnRelatorioVendas.setBounds(133, 178, 225, 39);
+		btnRelatorioVendas.setBounds(120, 178, 250, 39);
 		panel.add(btnRelatorioVendas);
 		
 		JButton btnRelatorioProdutos = new JButton("RELATORIOS PRODUTOS");
+		btnRelatorioProdutos.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+				JRelatorioProdutos jRelatoriosProdutos = null;
+				try {
+					jRelatoriosProdutos = new JRelatorioProdutos();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				jRelatoriosProdutos.setLocationRelativeTo(jRelatoriosProdutos);
+				jRelatoriosProdutos.setVisible(true);
+			}
+		});
 		btnRelatorioProdutos.setFont(new Font("Tahoma", Font.BOLD, 15));
-		btnRelatorioProdutos.setBounds(133, 227, 225, 39);
+		btnRelatorioProdutos.setBounds(120, 227, 250, 39);
 		panel.add(btnRelatorioProdutos);
 	}
 

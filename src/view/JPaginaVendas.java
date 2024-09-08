@@ -295,7 +295,7 @@ public class JPaginaVendas extends JFrame implements UsuarioLogadoReceiver {
 					    
 					    // Verifica se o nome do cliente não está vazio
 					    if (nomeCliente != null && !nomeCliente.trim().isEmpty()) {
-							estoque.fazPagamento(usuarioLogado.getNome(), nomeCliente);
+							estoque.fazPagamento(usuarioLogado.getNomeColaborador(), nomeCliente);
 							JOptionPane.showMessageDialog(btnPagar, "Pagamento Realizado com Sucesso");
 							carregarTitulosEmAbertoNaTabela();
 							atualizarTotalEmAberto();

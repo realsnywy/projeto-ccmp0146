@@ -2,6 +2,7 @@ package com.erp;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.*;
 import javax.swing.JTextField;
 
@@ -35,12 +36,22 @@ public class Estoque {
     }
 	
 	//adiciona produtos ao estoque
-	public void addProduto(JTextField textFieldNomeDoProduto, JTextField textFieldPrecoProduto, JTextField textFieldQuantidadeProduto, JTextField textFieldPeso) throws IOException {
+	public void addProduto(JTextField textFieldNomeDoProduto, JTextField textFieldPrecoProduto, JTextField textFieldQuantidadeProduto, JTextField textFieldPeso,
+			JTextField textFieldDia, JTextField textFieldMes, JTextField textFieldAno) throws IOException {
 	    String nome = textFieldNomeDoProduto.getText();
 	    double preco = Double.parseDouble(textFieldPrecoProduto.getText().trim());
 	    int quantidade = Integer.parseInt(textFieldQuantidadeProduto.getText().trim());
 	    float peso = Float.parseFloat(textFieldPeso.getText().trim());
 	    float pesoTotal = peso * quantidade;
+	    LocalDate vencimento = LocalDate.of(3000, 12, 12); //@Felipee013 Se n adicionar data == produto n perecível
+		   // aí a data vai pra 12/12/3000
+	    
+	    if(!textFieldDia.getText().trim().isEmpty() && !textFieldMes.getText().trim().isEmpty() && !textFieldAno.getText().trim().isEmpty()) {
+	    	int dia = Integer.parseInt(textFieldDia.getText().trim());//checa para ver se adicionou data aí transforma en int
+            int mes = Integer.parseInt(textFieldMes.getText().trim());
+            int ano = Integer.parseInt(textFieldAno.getText().trim());
+            vencimento = LocalDate.of(ano, mes, dia);
+	    }
 	    
 	    Produto produtoExistente = null;
 	    for (Produto p : produtos) {
@@ -58,7 +69,7 @@ public class Estoque {
 	        // Produto não existe, cria um novo
 	        int tamanho1 = produtos.size() + 1;
 	        String id = String.valueOf(tamanho1);
-	        Produto novoProduto = new Produto(id, nome, preco, quantidade, peso, pesoTotal);
+	        Produto novoProduto = new Produto(id, nome, preco, quantidade, peso, pesoTotal, vencimento);
 	        produtos.add(novoProduto);
 	    }
 	    
@@ -135,7 +146,7 @@ public class Estoque {
 	            }
 
 	            // Se o produto não for encontrado, adiciona como um novo produto no carrinho  
-	                Produto novoProduto = new Produto(produto.getId(), produto.getNome(), produto.getPreco(), produtoQuant, produto.getPeso(), produto.getPesoTotal());
+	                Produto novoProduto = new Produto(produto.getId(), produto.getNome(), produto.getPreco(), produtoQuant, produto.getPeso(), produto.getPesoTotal(), produto.getVencimento());
 	                produtosCarrinho.add(novoProduto);
 	                produto.setQuantidade(produto.getQuantidade() - produtoQuant);
 	                
@@ -150,7 +161,7 @@ public class Estoque {
 
 	    // Se não houver um título em aberto, cria um novo título
 	    List<Produto> novoProdutosCarrinho = new ArrayList<>();
-	    Produto novoProduto = new Produto(produto.getId(), produto.getNome(), produto.getPreco(), produtoQuant, produto.getPeso(), produto.getPesoTotal());
+	    Produto novoProduto = new Produto(produto.getId(), produto.getNome(), produto.getPreco(), produtoQuant, produto.getPeso(), produto.getPesoTotal(), produto.getVencimento());
 	    novoProdutosCarrinho.add(novoProduto);
 	    Titulo novoTitulo = new Titulo(UUID.randomUUID().toString(), produto.getPreco(), false, novoProdutosCarrinho);
 	    titulos.add(novoTitulo);
@@ -413,5 +424,16 @@ public class Estoque {
 				writer.newLine();
 			}
 		}
+	}
+	
+	public void mudarPreco (String idProduto ,double novoPreco) throws IOException { //@Feliipee013 muda o  preco de um produto
+
+		for (Produto p : produtos) {
+	        if (p.getId().equalsIgnoreCase(idProduto)) { //@Feliipee013
+	        	p.setNovoPreco(novoPreco);
+	        	saveProdutos();
+	            break;
+	        }
+	    }
 	}
 }

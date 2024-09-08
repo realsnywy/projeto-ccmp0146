@@ -104,7 +104,7 @@ public class JPaginaEstoque extends JFrame {
 			}
 		});
 		btnListarProdutos.setFont(new Font("Tahoma", Font.BOLD, 15));
-		btnListarProdutos.setBounds(144, 151, 209, 39);
+		btnListarProdutos.setBounds(131, 151, 234, 39);
 		panel.add(btnListarProdutos);
 		
 		JButton btnRemoverProdutos = new JButton("REMOVER PRODUTOS");
@@ -123,7 +123,7 @@ public class JPaginaEstoque extends JFrame {
 			}
 		});
 		btnRemoverProdutos.setFont(new Font("Tahoma", Font.BOLD, 15));
-		btnRemoverProdutos.setBounds(144, 200, 209, 39);
+		btnRemoverProdutos.setBounds(131, 200, 234, 39);
 		panel.add(btnRemoverProdutos);
 		
 		JButton btnAjuda = new JButton("AJUDA");
@@ -136,7 +136,7 @@ public class JPaginaEstoque extends JFrame {
 			}
 		});
 		btnAjuda.setFont(new Font("Tahoma", Font.BOLD, 15));
-		btnAjuda.setBounds(144, 249, 209, 39);
+		btnAjuda.setBounds(131, 249, 234, 39);
 		panel.add(btnAjuda);
 	}
 }

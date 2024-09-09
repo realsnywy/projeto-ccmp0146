@@ -295,55 +295,80 @@ public class JRelatoriosVendas extends JFrame {
 	}
 	
 	private void filtrarNotasFiscais(String nomeVendedor, String dia, String mes, String ano) throws IOException {
-        DefaultTableModel model = (DefaultTableModel) tabelaRelatorio.getModel();
-        model.setRowCount(0); // Limpa a tabela antes de adicionar novos dados
-        
-        Estoque estoque = new Estoque();
-        List<NotaFiscal> notasFiscais = estoque.getNotaFiscal();
+	    DefaultTableModel model = (DefaultTableModel) tabelaRelatorio.getModel();
+	    model.setRowCount(0); // Limpa a tabela antes de adicionar novos dados
+	    
+	    Estoque estoque = new Estoque();
+	    List<NotaFiscal> notasFiscais = estoque.getNotaFiscal();
 
-        List<NotaFiscal> notasFiltradas = new ArrayList<>();
+	    List<NotaFiscal> notasFiltradas = new ArrayList<>();
 
-        for (NotaFiscal nota : notasFiscais) {
-            boolean adicionarNota = true;
+	    for (NotaFiscal nota : notasFiscais) {
+	        boolean adicionarNota = true;
 
-            String[] dataPartes = nota.getData().split("/");
-            String dias = dataPartes[0];
-            String meses = dataPartes[1];
-            String anos = dataPartes[2];
+	        // Split the date from the note
+	        String[] dataPartes = nota.getData().split("/");
+	        String dias = dataPartes[0];
+	        String meses = dataPartes[1];
+	        String anos = dataPartes[2];
 
-            // Verificações de filtro
-            if (!nomeVendedor.equalsIgnoreCase("Todos os vendedores") && !nota.getNomeVendedor().equalsIgnoreCase(nomeVendedor)) {
-                adicionarNota = false;
-            }
-            if (!dia.isEmpty() && !dias.equals(dia)) {
-                adicionarNota = false;
-            }
-            if (!mes.isEmpty() && !meses.equals(mes)) {
-                adicionarNota = false;
-            }
-            if (!ano.isEmpty() && !anos.equals(ano)) {
-                adicionarNota = false;
-            }
+	        // Normalize date parts for comparison
+	        int diaNota = Integer.parseInt(dias);
+	        int mesNota = Integer.parseInt(meses);
+	        int anoNota = Integer.parseInt(anos);
 
-            if (adicionarNota) {
-                notasFiltradas.add(nota);
-            }
-        }
+	        // Verificações de filtro
 
-        // Atualiza a tabela com as notas fiscais filtradas
-        double totalVendas = 0;
-        for (NotaFiscal nota : notasFiltradas) {
-            model.addRow(new Object[]{
-                nota.getNomeVendedor(),
-                nota.getData(),
-                nota.getValor(),
-                nota.getIdNota()
-            });
-            totalVendas += nota.getValor();
-        }
+	        // Filtra pelo nome do vendedor, se especificado
+	        if (!nomeVendedor.equalsIgnoreCase("Todos os vendedores") && !nota.getNomeVendedor().equalsIgnoreCase(nomeVendedor)) {
+	            adicionarNota = false;
+	        }
+	        
+	        // Filtra pelo dia, se especificado
+	        if (!dia.isEmpty()) {
+	            int diaFiltro = Integer.parseInt(dia);
+	            if (diaNota != diaFiltro) {
+	                adicionarNota = false;
+	            }
+	        }
 
-        // Atualiza o total na tabela de total
-        DefaultTableModel modelTotal = (DefaultTableModel) tableTotal.getModel();
-        modelTotal.setValueAt(String.format("%.2f", totalVendas), 0, 0);
-    }
+	        // Filtra pelo mês, se especificado
+	        if (!mes.isEmpty()) {
+	            int mesFiltro = Integer.parseInt(mes);
+	            if (mesNota != mesFiltro) {
+	                adicionarNota = false;
+	            }
+	        }
+
+	        // Filtra pelo ano, se especificado
+	        if (!ano.isEmpty()) {
+	            int anoFiltro = Integer.parseInt(ano);
+	            if (anoNota != anoFiltro) {
+	                adicionarNota = false;
+	            }
+	        }
+
+	        // Adiciona a nota fiscal filtrada se passar em todos os critérios
+	        if (adicionarNota) {
+	            notasFiltradas.add(nota);
+	        }
+	    }
+
+	    // Atualiza a tabela com as notas fiscais filtradas
+	    double totalVendas = 0;
+	    for (NotaFiscal nota : notasFiltradas) {
+	        model.addRow(new Object[]{
+	            nota.getNomeVendedor(),
+	            nota.getData(),
+	            nota.getValor(),
+	            nota.getIdNota()
+	        });
+	        totalVendas += nota.getValor();
+	    }
+
+	    // Atualiza o total na tabela de total
+	    DefaultTableModel modelTotal = (DefaultTableModel) tableTotal.getModel();
+	    modelTotal.setValueAt(String.format("%.2f", totalVendas),0,0);
+	}
+
 }

@@ -26,6 +26,7 @@ public class Estoque {
 		produtos = new ArrayList<>();
 		titulos = new ArrayList<>();
 		notasFiscais = new ArrayList<>();
+		concorrencias = new ArrayList<>();
 		carregaProduto();
 		carregaNotasFiscais();
 		carregaTitulos();
@@ -486,4 +487,33 @@ public class Estoque {
 	        }
 	    }
 	}
+	
+	public double calcularMediaPrecosConcorrencia(String nomeProduto) {
+	    double soma = 0;
+	    int count = 0;
+	    
+	    for (Concorrencia concorrente : concorrencias) {
+	        if (concorrente.getNome().equalsIgnoreCase(nomeProduto)) {
+	            soma += concorrente.getPreco();
+	            count++;
+	        }
+	    }
+	    
+	    if (count == 0) {
+	        return -1; // Indica que o produto não foi encontrado na concorrência
+	    }
+	    
+	    return soma / count;
+	}
+
+	public double sugerirNovoPreco(String nomeProduto) {
+	    double mediaConcorrencia = calcularMediaPrecosConcorrencia(nomeProduto);
+	    
+	    if (mediaConcorrencia == -1) {
+	        return -1; // Se não houver concorrência, retorna -1 para indicar que não há sugestão
+	    }
+	    
+	    return mediaConcorrencia * 0.9; // Aplica o desconto de 10%
+	}
+
 }

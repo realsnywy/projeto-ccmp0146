@@ -1,3 +1,3 @@
-carro, 20.50
-Produto2, 40.00
+carro, 100.00
+bolo, 40.00
 Produto3, 60.75

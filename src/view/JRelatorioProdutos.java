@@ -249,34 +249,41 @@ public class JRelatorioProdutos extends JFrame {
 				model.addRow(new Object[]{produto.getNome(), produto.getPreco(), produto.getId(), produto.getQuantidade(), produto.getVencimento()});
 		}
 	}
-	 private void carregarProdutosNaTabela2() {
-	        DefaultTableModel model = (DefaultTableModel) table_1.getModel();
-	        model.setRowCount(0); // Limpa a tabela
+	private void carregarProdutosNaTabela2() {
+	    DefaultTableModel model = (DefaultTableModel) table_1.getModel();
+	    model.setRowCount(0); // Limpa a tabela
 
-	        List<Produto> produtos = estoque.getProdutos();
+	    List<Produto> produtos = estoque.getProdutos();
 
-	        for (Produto produto : produtos) {
-	        	
-	        	LocalDate vencimento = produto.getVencimento();
-	        	String prazoValidade = consultaValidade(produto, vencimento);//@Feliipee013 passa o produto e sua data de vencimento
-	        	
-	        	float pesoSuportadoNoEstoque = totalEstoque/produto.getPeso();
-	            String nivelDoEstoque = consultaDeInfo(produto, pesoSuportadoNoEstoque);// Passa o produto específico
+	    for (Produto produto : produtos) {
+	        
+	        LocalDate vencimento = produto.getVencimento();
+	        String prazoValidade = consultaValidade(produto, vencimento); // Verifica validade
+	        
+	        float pesoSuportadoNoEstoque = totalEstoque / produto.getPeso();
+	        String nivelDoEstoque = consultaDeInfo(produto, pesoSuportadoNoEstoque); // Verifica nível de estoque
 
-	            if (nivelDoEstoque != null) {
-	                model.addRow(new Object[]{nivelDoEstoque});
-	            }
-	            
-	            if(prazoValidade != null) {
-	            	model.addRow(new Object []{prazoValidade});
-	            	corNaLinha();
-	            }
-	            if(produto.isPrecoAlterado()) {
-	            	  model.addRow(new Object[]{"Preço do produto: " + produto.getNome() +
-	            			  " foi alterado para: R$ " + produto.getPreco()});
-	            }
+	        if (nivelDoEstoque != null) {
+	            model.addRow(new Object[]{nivelDoEstoque});
+	        }
+	        
+	        if (prazoValidade != null) {
+	            model.addRow(new Object[]{prazoValidade});
+	            corNaLinha(); // Aplica cor nas linhas conforme a condição
+	        }
+
+	        // Sugere novo preço se houver uma diferença
+	        double novoPrecoSugerido = estoque.sugerirNovoPreco(produto.getNome());
+	        if (novoPrecoSugerido != -1 && novoPrecoSugerido != produto.getPreco()) {
+	            model.addRow(new Object[]{"Sugestão de novo preço para " + produto.getNome() + ": R$ " + novoPrecoSugerido});
+	        }
+	        
+	        if (produto.isPrecoAlterado()) {
+	            model.addRow(new Object[]{"Preço do produto: " + produto.getNome() + " foi alterado para: R$ " + produto.getPreco()});
 	        }
 	    }
+	}
+	
 	 public String consultaValidade(Produto produto, LocalDate vencimento) {
 	    	LocalDate hoje = LocalDate.now();//@Feliipee013 variável para ver q dia é hj
 	    	if(Period.between(hoje, vencimento).getDays() > 0 && Period.between(hoje, vencimento).getDays() <= 31

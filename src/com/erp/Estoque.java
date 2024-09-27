@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.*;
 import javax.swing.JTextField;
 
+import model.Concorrencia;
 import model.NotaFiscal;
 import model.Produto;
 import model.Titulo;
@@ -14,10 +15,13 @@ public class Estoque {
 	private List<Produto> produtos;
 	private List<Titulo> titulos;
 	private List<NotaFiscal> notasFiscais;
+	private List<Concorrencia> concorrencias;
 	public static final String PRODUTOS_ARQUIVO = "produtos.txt";
 	private static final String TITULOS_ARQUIVO = "titulos.txt";
 	private static final String NOTASFISCAIS_ARQUIVO = "notasfiscais.txt";
-
+	private static final String CONCORRENCIA1 = "concorrente1.txt";
+	private static final String CONCORRENCIA2 = "concorrente2.txt";
+	
 	public Estoque() throws IOException {
 		produtos = new ArrayList<>();
 		titulos = new ArrayList<>();
@@ -25,6 +29,8 @@ public class Estoque {
 		carregaProduto();
 		carregaNotasFiscais();
 		carregaTitulos();
+		carregaConcorrencia1();
+		carregaConcorrencia2();
 	}
 	
 	public List<NotaFiscal> getNotaFiscal() {
@@ -358,6 +364,32 @@ public class Estoque {
 		}
 	}
     
+    private void carregaConcorrencia1() throws IOException {//carrega os produtos na lista quando a classe estoque é instanciada
+		File file = new File(CONCORRENCIA1);
+		if (file.exists()) {
+			try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+				String line;
+				while ((line = reader.readLine()) != null) {
+					Concorrencia concorrencia = Concorrencia.fromString(line);
+		                concorrencias.add(concorrencia);
+				}
+			}
+		}
+	}
+    
+    private void carregaConcorrencia2() throws IOException {//carrega os produtos na lista quando a classe estoque é instanciada
+		File file = new File(CONCORRENCIA2);
+		if (file.exists()) {
+			try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+				String line;
+				while ((line = reader.readLine()) != null) {
+					Concorrencia concorrencia = Concorrencia.fromString(line);
+	                concorrencias.add(concorrencia);
+				}
+			}
+		}
+	}
+    
     private void carregaNotasFiscais() throws IOException {
         File file = new File(NOTASFISCAIS_ARQUIVO);
         if (file.exists()) {
@@ -421,6 +453,24 @@ public class Estoque {
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(TITULOS_ARQUIVO))) {
 			for (Titulo title : titulos) {
 				writer.write(title.toString());
+				writer.newLine();
+			}
+		}
+	}
+	
+	private void saveConcorrencia1() throws IOException {//salva os titulos no txt
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(CONCORRENCIA1))) {
+			for (Concorrencia concorrencia : concorrencias) {
+				writer.write(concorrencia.toString());
+				writer.newLine();
+			}
+		}
+	}
+	
+	private void saveConcorrencia2() throws IOException {//salva os titulos no txt
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(CONCORRENCIA2))) {
+			for (Concorrencia concorrencia : concorrencias) {
+				writer.write(concorrencia.toString());
 				writer.newLine();
 			}
 		}

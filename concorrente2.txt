@@ -1,0 +1,3 @@
+Produto1, 10.50
+Produto2, 20.00
+carro, 30.75

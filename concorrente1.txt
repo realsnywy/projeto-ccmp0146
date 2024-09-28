@@ -1,0 +1,3 @@
+carro, 10000.00
+Produto2, 40.00
+Produto3, 60.75

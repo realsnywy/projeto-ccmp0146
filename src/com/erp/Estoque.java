@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.*;
 import javax.swing.JTextField;
 
+import model.Concorrencia;
 import model.NotaFiscal;
 import model.Produto;
 import model.Titulo;
@@ -14,17 +15,23 @@ public class Estoque {
 	private List<Produto> produtos;
 	private List<Titulo> titulos;
 	private List<NotaFiscal> notasFiscais;
+	private List<Concorrencia> concorrencias;
 	public static final String PRODUTOS_ARQUIVO = "produtos.txt";
 	private static final String TITULOS_ARQUIVO = "titulos.txt";
 	private static final String NOTASFISCAIS_ARQUIVO = "notasfiscais.txt";
-
+	private static final String CONCORRENCIA1 = "concorrente1.txt";
+	private static final String CONCORRENCIA2 = "concorrente2.txt";
+	
 	public Estoque() throws IOException {
 		produtos = new ArrayList<>();
 		titulos = new ArrayList<>();
 		notasFiscais = new ArrayList<>();
+		concorrencias= new ArrayList<>();
 		carregaProduto();
 		carregaNotasFiscais();
 		carregaTitulos();
+		carregaConcorrencia1();
+		carregaConcorrencia2();
 	}
 	
 	public List<NotaFiscal> getNotaFiscal() {
@@ -33,6 +40,10 @@ public class Estoque {
 	
 	public List<Produto> getProdutos() {
         return produtos;
+    }
+	
+	public List<Concorrencia> getConcorrencia1() {
+        return concorrencias;
     }
 	
 	//adiciona produtos ao estoque
@@ -398,6 +409,32 @@ public class Estoque {
 			}
 		}
 	}
+	
+	private void carregaConcorrencia1() throws IOException {//carrega os produtos na lista quando a classe estoque é instanciada
+		File file = new File(CONCORRENCIA1);
+		if (file.exists()) {
+			try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+				String line;
+				while ((line = reader.readLine()) != null) {
+					Concorrencia concorrencia = Concorrencia.fromString(line);
+		                concorrencias.add(concorrencia);
+				}
+			}
+		}
+	}
+	
+	private void carregaConcorrencia2() throws IOException {//carrega os produtos na lista quando a classe estoque é instanciada
+		File file = new File(CONCORRENCIA2);
+		if (file.exists()) {
+			try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+				String line;
+				while ((line = reader.readLine()) != null) {
+					Concorrencia concorrencia = Concorrencia.fromString(line);
+	                concorrencias.add(concorrencia);
+				}
+			}
+		}
+	}
 
 	private void saveProdutos() throws IOException {//salva os dados no txt
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(PRODUTOS_ARQUIVO))) {
@@ -426,6 +463,24 @@ public class Estoque {
 		}
 	}
 	
+	private void saveConcorrencia1() throws IOException {//salva os titulos no txt
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(CONCORRENCIA1))) {
+			for (Concorrencia concorrencia : concorrencias) {
+				writer.write(concorrencia.toString());
+				writer.newLine();
+			}
+		}
+	}
+	
+	private void saveConcorrencia2() throws IOException {//salva os titulos no txt
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(CONCORRENCIA2))) {
+			for (Concorrencia concorrencia : concorrencias) {
+				writer.write(concorrencia.toString());
+				writer.newLine();
+			}
+		}
+	}
+	
 	public void mudarPreco (String idProduto ,double novoPreco) throws IOException { //@Feliipee013 muda o  preco de um produto
 
 		for (Produto p : produtos) {
@@ -436,4 +491,60 @@ public class Estoque {
 	        }
 	    }
 	}
+	
+	public double calcularMediaPrecosConcorrencia(String nomeProduto) {
+	    double soma = 0;
+	    int count = 0;
+	    
+	    for (Concorrencia concorrente : concorrencias) {
+	        if (concorrente.getNome().equalsIgnoreCase(nomeProduto)) {
+	            soma += concorrente.getPreco();
+	            count++;
+	        }
+	    }
+	    
+	    if (count == 0) {
+	        return -1; // Indica que o produto não foi encontrado na concorrência
+	    }
+	    
+	    return soma / count;
+	}
+	
+	public double sugerirNovoPreco(String nomeProduto) throws IOException {
+	    // Calcula a média de preços da concorrência para o produto especificado
+	    double mediaConcorrencia = calcularMediaPrecosConcorrencia(nomeProduto);
+
+	    // Variável para verificar se o produto existe na concorrência
+	    boolean produtoExisteNaConcorrencia = false;
+
+	    // Itera sobre a lista de concorrência para verificar se o produto existe
+	    for (Concorrencia concorrente : concorrencias) {
+	        if (concorrente.getNome().equalsIgnoreCase(nomeProduto)) {
+	            produtoExisteNaConcorrencia = true;
+	            break;
+	        }
+	    }
+
+	    // Se o produto não existe na concorrência, retorna -1
+	    if (!produtoExisteNaConcorrencia) {
+	        return -1;
+	    }
+
+	    // Itera sobre os produtos do estoque
+	    for (Produto produto : produtos) {
+	        // Verifica se o nome do produto corresponde ao nome do produto especificado
+	        if (produto.getNome().equalsIgnoreCase(nomeProduto) && produtoExisteNaConcorrencia) {
+	            // Se a média de preços da concorrência for menor que o preço atual do produto
+	            if (mediaConcorrencia < produto.getPreco()) {
+	                return mediaConcorrencia * 0.9; // Sugere um preço 10% menor que a média da concorrência
+	            } else {
+	                return produto.getPreco(); // Caso contrário, mantém o preço atual
+	            }
+	        }
+	    }
+
+	    // Se o produto não for encontrado no estoque
+	    return -1; // Retorna -1 se o produto não existir no estoque
+	}
+
 }

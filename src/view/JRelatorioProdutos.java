@@ -184,7 +184,12 @@ public class JRelatorioProdutos extends JFrame {
 					e1.printStackTrace();
 				}
 		        carregarProdutosNaTabela();
-		        carregarProdutosNaTabela2();
+		        try {
+					carregarProdutosNaTabela2();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 		    }
 		});
 		btnMudarPreco.setBackground(new Color(68, 204, 215));
@@ -249,7 +254,7 @@ public class JRelatorioProdutos extends JFrame {
 				model.addRow(new Object[]{produto.getNome(), produto.getPreco(), produto.getId(), produto.getQuantidade(), produto.getVencimento()});
 		}
 	}
-	 private void carregarProdutosNaTabela2() {
+	 private void carregarProdutosNaTabela2() throws IOException {
 	        DefaultTableModel model = (DefaultTableModel) table_1.getModel();
 	        model.setRowCount(0); // Limpa a tabela
 
@@ -262,6 +267,8 @@ public class JRelatorioProdutos extends JFrame {
 	        	
 	        	float pesoSuportadoNoEstoque = totalEstoque/produto.getPeso();
 	            String nivelDoEstoque = consultaDeInfo(produto, pesoSuportadoNoEstoque);// Passa o produto específico
+	            
+	            double novoPrecoSugerido = estoque.sugerirNovoPreco(produto.getNome());// Sugere novo preço se houver uma diferença
 
 	            if (nivelDoEstoque != null) {
 	                model.addRow(new Object[]{nivelDoEstoque});
@@ -271,6 +278,15 @@ public class JRelatorioProdutos extends JFrame {
 	            	model.addRow(new Object []{prazoValidade});
 	            	corNaLinha();
 	            }
+	            
+	            if (novoPrecoSugerido != -1 && novoPrecoSugerido != produto.getPreco()) {
+	            	double media = estoque.calcularMediaPrecosConcorrencia(produto.getNome());
+		            model.addRow(new Object[]{"Sugestão de novo preço para " + produto.getNome() + ": R$ " + novoPrecoSugerido + " com desconto de 10%"});
+		            if(media != -1) {
+		            model.addRow(new Object[]{"Media do preço do produto " + produto.getNome() + " na concorrência:" + media});
+		            }
+		        }
+	            
 	            if(produto.isPrecoAlterado()) {
 	            	  model.addRow(new Object[]{"Preço do produto: " + produto.getNome() +
 	            			  " foi alterado para: R$ " + produto.getPreco()});
